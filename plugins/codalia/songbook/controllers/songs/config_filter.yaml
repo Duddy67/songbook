@@ -1,0 +1,42 @@
+# ===================================
+# Filter Scope Definitions
+# ===================================
+
+scopes:
+
+    category:
+
+        # Filter name
+        label: codalia.songbook::lang.songs.filter_category
+
+        # Model Class name
+        modelClass: Codalia\SongBook\Models\Category
+
+        # Model attribute to display for the name
+        nameFrom: name
+
+        # Apply query scope
+        scope: FilterCategories
+
+
+    published_date:
+
+        # Filter name
+        label: codalia.songbook::lang.songs.filter_date
+
+        # Filter type
+        type: daterange
+
+        # SQL Conditions
+        conditions: created_at >= ':after' AND created_at <= ':before'
+
+
+    status:
+        label: Status
+        type: group
+        conditions: status in (:filtered)
+        options:
+            published: codalia.songbook::lang.status.published
+            unpublished: codalia.songbook::lang.status.unpublished
+            archived: codalia.songbook::lang.status.archived
+            trashed: codalia.songbook::lang.status.trashed

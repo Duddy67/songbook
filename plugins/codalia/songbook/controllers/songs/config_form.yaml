@@ -1,0 +1,31 @@
+# ===================================
+#  Form Behavior Config
+# ===================================
+
+# Record name
+name: Song
+
+# Model Form Field configuration
+form: $/codalia/songbook/models/song/fields.yaml
+
+# Model Class name
+modelClass: Codalia\SongBook\Models\Song
+
+# Default redirect location
+defaultRedirect: codalia/songbook/songs
+
+# Create page
+create:
+    title: Create Song
+    redirect: codalia/songbook/songs/update/:id
+    redirectClose: codalia/songbook/songs
+
+# Update page
+update:
+    title: Edit Song
+    redirect: codalia/songbook/songs
+    redirectClose: codalia/songbook/songs
+
+# Preview page
+preview:
+    title: Preview Song

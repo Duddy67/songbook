@@ -1,0 +1,46 @@
+# ===================================
+#  Form Field Definitions
+# ===================================
+
+fields:
+    name:
+        label: codalia.songbook::lang.attribute.name
+        span: left
+        placeholder: codalia.songbook::lang.category.name_placeholder
+        required: true
+
+    slug:
+        label: codalia.songbook::lang.attribute.slug
+        span: right
+        placeholder: codalia.songbook::lang.category.slug_placeholder
+        required: true
+        preset:
+            field: name
+            type: slug
+
+    status:
+        tab: codalia.songbook::lang.attribute.tab_manage
+        label: codalia.songbook::lang.attribute.status
+        type: dropdown
+
+    description:
+        label: codalia.songbook::lang.attribute.description
+        size: large
+        oc.commentPosition: ''
+        span: full
+        type: textarea
+
+    created_at:
+        label: codalia.songbook::lang.attribute.created_at
+        type: datepicker
+        mode: datetime
+        context: [update]
+        disabled: true
+
+    updated_at:
+        label: codalia.songbook::lang.attribute.updated_at
+        type: datepicker
+        mode: datetime
+        context: [update]
+        disabled: true
+

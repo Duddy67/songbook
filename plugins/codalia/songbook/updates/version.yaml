@@ -1,0 +1,9 @@
+1.0.1: First version of songbook
+1.0.2:
+    - 'Created table codalia_songbook_songs_table'
+    - create_songs_table.php
+    - 'Created table codalia_songbook_categories_table'
+    - create_categories_table.php
+    - 'Seeded codalia_songbook_songs table'
+    - seed_table.php
+

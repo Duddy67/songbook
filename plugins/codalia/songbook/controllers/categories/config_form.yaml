@@ -1,0 +1,31 @@
+# ===================================
+#  Form Behavior Config
+# ===================================
+
+# Record name
+name: Category
+
+# Model Form Field configuration
+form: $/codalia/songbook/models/category/fields.yaml
+
+# Model Class name
+modelClass: Codalia\SongBook\Models\Category
+
+# Default redirect location
+defaultRedirect: codalia/songbook/categories
+
+# Create page
+create:
+    title: Create Category
+    redirect: codalia/songbook/categories/update/:id
+    redirectClose: codalia/songbook/categories
+
+# Update page
+update:
+    title: Edit Category
+    redirect: codalia/songbook/categories
+    redirectClose: codalia/songbook/categories
+
+# Preview page
+preview:
+    title: Preview Category

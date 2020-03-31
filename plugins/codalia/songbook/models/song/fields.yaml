@@ -1,0 +1,113 @@
+# ===================================
+#  Form Field Definitions
+# ===================================
+
+fields:
+    title:
+        label: codalia.songbook::lang.attribute.title
+        span: left
+        placeholder: codalia.songbook::lang.song.title_placeholder
+        required: true
+
+    slug:
+        label: codalia.songbook::lang.attribute.slug
+        span: right
+        placeholder: codalia.songbook::lang.song.slug_placeholder
+        required: true
+        preset:
+            field: title
+            type: slug
+
+secondaryTabs:
+    stretch: true
+    fields:
+        lyrics:
+            tab: codalia.songbook::lang.attribute.tab_edit
+            type: richeditor
+            stretch: true
+
+        categories:
+            tab: codalia.songbook::lang.song.tab_categories
+            type: relation
+            commentAbove: codalia.songbook::lang.song.categories_comment
+            placeholder: codalia.songbook::lang.song.categories_placeholder
+
+        status:
+            tab: codalia.songbook::lang.attribute.tab_manage
+            label: codalia.songbook::lang.attribute.status
+            type: dropdown
+            permissions: codalia.songbook.access_publish
+
+        # Read-only information field for users without publish access.
+        _status_field:
+            tab: codalia.songbook::lang.attribute.tab_manage
+            label: codalia.songbook::lang.attribute.status
+            disabled: true
+
+        published_up:
+            tab: codalia.songbook::lang.attribute.tab_manage
+            label: codalia.songbook::lang.attribute.published_up
+            type: datepicker
+            mode: datetime
+            permissions: codalia.songbook.access_publish
+            trigger:
+                action: enable
+                field: status
+                condition: value[published]
+
+        published_down:
+            tab: codalia.songbook::lang.attribute.tab_manage
+            label: codalia.songbook::lang.attribute.published_down
+            type: datepicker
+            mode: datetime
+            permissions: codalia.songbook.access_publish
+            trigger:
+                action: enable
+                field: status
+                condition: value[published]
+
+        created_at:
+            tab: codalia.songbook::lang.attribute.tab_manage
+            label: codalia.songbook::lang.attribute.created_at
+            type: datepicker
+            mode: datetime
+            context: [update]
+            disabled: true
+
+        user:
+            tab: codalia.songbook::lang.attribute.tab_manage
+            label: codalia.songbook::lang.attribute.created_by
+            type: relation
+            select: concat(first_name, " ",last_name)
+            permissions: codalia.songbook.access_other_songs
+
+        # Read-only information field for users without other_songs access.
+        _created_by_field:
+            tab: codalia.songbook::lang.attribute.tab_manage
+            label: codalia.songbook::lang.attribute.created_by
+            context: [update]
+            disabled: true
+
+        updated_at:
+            tab: codalia.songbook::lang.attribute.tab_manage
+            label: codalia.songbook::lang.attribute.updated_at
+            type: datepicker
+            mode: datetime
+            context: [update]
+            disabled: true
+
+        # Read-only information field.
+        _updated_by_field:
+            tab: codalia.songbook::lang.attribute.tab_manage
+            label: codalia.songbook::lang.attribute.updated_by
+            context: [update]
+            disabled: true
+
+        id:
+            tab: codalia.songbook::lang.attribute.tab_manage
+            label: ID
+            context: [update]
+            disabled: true
+
+
+

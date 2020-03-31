@@ -1,0 +1,37 @@
+# ===================================
+#  List Column Definitions
+# ===================================
+
+columns:
+    title:
+        label: codalia.songbook::lang.attribute.title
+        searchable: true
+        sortable: true
+
+    categories:
+        label: codalia.songbook::lang.songbook.categories
+        relation: categories
+        select: name
+        searchable: true
+        sortable: false
+
+    status:
+        label: codalia.songbook::lang.attribute.status
+        sortable: true
+        type: partial
+        path: ~/plugins/codalia/songbook/models/song/_status_column.htm
+
+    _created_by_field:
+        label: codalia.songbook::lang.attribute.created_by
+        select: codalia_songbook_songs.created_by
+        sortable: true
+
+    created_at:
+        label: codalia.songbook::lang.attribute.created_at
+        type: datetime
+        sortable: true
+
+    id:
+        label: ID
+        searchable: true
+

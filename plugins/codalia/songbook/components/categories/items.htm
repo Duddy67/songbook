@@ -1,0 +1,19 @@
+{% for category in categories %}
+    {% set songCount = category.songs_count().count %}
+    <li {% if category.slug == currentCategorySlug %}class="active"{% endif %}>
+        <a href="{{ category.url }}">{{ category.name }}</a>
+        {% if songCount %}
+            <span class="badge">{{ songCount }}</span>
+        {% endif %}
+
+        {% if category.children|length > 0 %}
+            <ul>
+                {% partial __SELF__ ~ "::items"
+                    categories=category.children
+                    currentCategorySlug=currentCategorySlug
+                %}
+            </ul>
+        {% endif %}
+    </li>
+{% endfor %}
+
