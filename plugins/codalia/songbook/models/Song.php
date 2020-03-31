@@ -151,7 +151,7 @@ class Song extends Model
       return Lang::get($statuses[$status]);
     }
 
-    public function beforeCreate()
+    /*public function beforeCreate()
     {
       if(empty($this->slug)) {
 	$this->slug = Str::slug($this->title);
@@ -159,7 +159,7 @@ class Song extends Model
 
       $user = BackendAuth::getUser();
       $this->created_by = $user->id;
-    }
+    }*/
 
 
     public function beforeSave()
@@ -203,6 +203,14 @@ class Song extends Model
      */
     public function filterFields($fields, $context = null)
     {
+
+        if ($context == 'update') {
+	  if (strcmp($fields->created_at->value->toDateTimeString(), $fields->updated_at->value->toDateTimeString()) === 0) {
+	      $fields->updated_at->hidden = true;
+	      $fields->_updated_by_field->hidden = true;
+	  }
+	}
+
         if (!isset($fields->_status_field)) {
             return;
 	}
@@ -231,7 +239,7 @@ class Song extends Model
 
 
     /**
-     * Allows filtering for specifc categories.
+     * Allows filtering for specific categories.
      * @param  Illuminate\Query\Builder  $query      QueryBuilder
      * @param  array                     $categories List of category ids
      * @return Illuminate\Query\Builder              QueryBuilder
