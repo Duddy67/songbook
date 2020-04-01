@@ -14,7 +14,7 @@
                 on {{ song.published_at|date('M d, Y') }}
             </p>
 
-            <p class="excerpt">{{ song.lyrics|raw }}</p>
+            <p class="excerpt">{{ song.summary|raw }}</p>
         </li>
     {% else %}
         <li class="no-data">{{ __SELF__.noSongsMessage }}</li>

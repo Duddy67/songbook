@@ -1,11 +1,13 @@
 <?php namespace Codalia\SongBook\Models;
 
 use Lang;
+use Html;
 use Model;
 use BackendAuth;
 use October\Rain\Support\Str;
 use October\Rain\Database\Traits\Validation;
 use Carbon\Carbon;
+use Codalia\SongBook\Models\Settings;
 
 
 /**
@@ -56,7 +58,7 @@ class Song extends Model
     /**
      * @var array Attributes to be appended to the API representation of the model (ex. toArray())
      */
-    protected $appends = [];
+    protected $appends = ['summary'];
 
     /**
      * @var array Attributes to be removed from the API representation of the model (ex. toArray())
@@ -195,7 +197,7 @@ class Song extends Model
     }
 
     /**
-     * Switch visibility of the created_by and status fields according to the current user accesses.
+     * Switch visibility of some fields according to the current user accesses.
      *
      * @param       $fields
      * @param  null $context
@@ -249,6 +251,25 @@ class Song extends Model
         return $query->whereHas('categories', function($q) use ($categories) {
             $q->whereIn('id', $categories);
         });
+    }
+
+    /**
+     * Returns the HTML content before the <!-- more --> tag or a limited 600
+     * character version.
+     *
+     * @return string
+     */
+    public function getSummaryAttribute()
+    {
+        $more = '<!-- more -->';
+
+        if (strpos($this->lyrics, $more) !== false) {
+            $parts = explode($more, $this->lyrics);
+
+            return array_get($parts, 0);
+        }
+
+        return Html::limit($this->lyrics, 600);
     }
 
     //
