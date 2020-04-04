@@ -73,6 +73,8 @@ return [
       'trash_success' => 'Successfully trashed those items.',
       'delete_success' => 'Successfully deleted those items.',
       'parent_item_unpublished' => 'Cannot publish this item as its parent item is unpublished.',
+      'previous' => 'Previous',
+      'next' => 'Next',
     ],
     'sorting' => [
         'title_asc' => 'Title (ascending)',
@@ -125,6 +127,11 @@ return [
       'songs_except_categories_description' => 'Enter a comma-separated list of category slugs or variable with such a list of categories you want to exclude',
       'songs_except_categories_validation' => 'Category exceptions must be a single category slug, or a comma-separated list of slugs',
       'group_exceptions' => 'Exceptions'
+    ],
+    'global_settings' => [
+      'tab_general' => 'General',
+      'max_characters' => 'Max characters',
+      'max_characters_comment' => 'Max characters',
     ],
     'messages' => [
       'required_field' => 'This field is required'

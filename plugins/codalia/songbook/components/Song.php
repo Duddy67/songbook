@@ -68,11 +68,10 @@ class Song extends ComponentBase
 
         $song = new SongItem;
 
-        /*$song = $song->isClassExtendedWith('RainLab.Translate.Behaviors.TranslatableModel')
-            ? $song->transWhere('slug', $slug)
-            : $song->where('slug', $slug);
+	// Retrieves the song on the basis of its slug.
+	$song = $song->where('slug', $slug);
 
-        if (!$this->checkEditor()) {
+        /*if (!$this->checkEditor()) {
             $song = $song->isPublished();
 	}*/
 
@@ -95,7 +94,36 @@ class Song extends ComponentBase
         return $song;
     }
 
+    public function previousSong()
+    {
+        return $this->getSongSibling(-1);
+    }
 
+    public function nextSong()
+    {
+        return $this->getSongSibling(1);
+    }
 
+    protected function getSongSibling($direction = 1)
+    {
+        if (!$this->song) {
+            return;
+        }
 
+        $method = $direction === -1 ? 'previousSong' : 'nextSong';
+
+        if (!$song = $this->song->$method()) {
+            return;
+        }
+
+        $songPage = $this->getPage()->getBaseFileName();
+
+        $song->setUrl($songPage, $this->controller);
+
+        $song->categories->each(function($category) {
+            $category->setUrl($this->categoryPage, $this->controller);
+        });
+
+        return $song;
+    }
 }

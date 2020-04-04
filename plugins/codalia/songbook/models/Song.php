@@ -269,7 +269,7 @@ class Song extends Model
             return array_get($parts, 0);
         }
 
-        return Html::limit($this->lyrics, 600);
+        return Html::limit($this->lyrics, Settings::get('max_characters', 600));
     }
 
     //
@@ -286,6 +286,64 @@ class Song extends Model
 		     ->where(function ($orWhere) {
 			   $orWhere->whereNull('published_down')->orWhereColumn('published_down', '<', 'published_up');
 		     });
+    }
+
+    /**
+     * Apply a constraint to the query to find the nearest sibling
+     *
+     *     // Get the next song
+     *     Song::applySibling()->first();
+     *
+     *     // Get the previous song
+     *     Song::applySibling(-1)->first();
+     *
+     *     // Get the previous song, ordered by the ID attribute instead
+     *     Song::applySibling(['direction' => -1, 'attribute' => 'id'])->first();
+     *
+     * @param       $query
+     * @param array $options
+     * @return
+     */
+    public function scopeApplySibling($query, $options = [])
+    {
+        if (!is_array($options)) {
+            $options = ['direction' => $options];
+        }
+
+        extract(array_merge([
+            'direction' => 'next',
+            'attribute' => 'sort_order'
+        ], $options));
+
+        $isPrevious = in_array($direction, ['previous', -1]);
+        $directionOrder = $isPrevious ? 'asc' : 'desc';
+        $directionOperator = $isPrevious ? '>' : '<';
+
+        $query->where('id', '<>', $this->id);
+
+        if (!is_null($this->$attribute)) {
+            $query->where($attribute, $directionOperator, $this->$attribute);
+	}
+
+        return $query->orderBy($attribute, $directionOrder);
+    }
+
+    /**
+     * Returns the next song, if available.
+     * @return self
+     */
+    public function nextSong()
+    {
+        return self::isPublished()->applySibling()->first();
+    }
+
+    /**
+     * Returns the previous song, if available.
+     * @return self
+     */
+    public function previousSong()
+    {
+        return self::isPublished()->applySibling(-1)->first();
     }
 
     /**
@@ -312,7 +370,7 @@ class Song extends Model
             'exceptSong'       => null
         ], $options));
 
-        $searchableFields = ['title', 'slug', 'excerpt', 'content'];
+        $searchableFields = ['title', 'slug', 'lyrics', 'content'];
 
         if ($published) {
             $query->isPublished();

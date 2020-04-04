@@ -195,7 +195,8 @@ class Songs extends ComponentBase
     protected function listSongs()
     {
         $category = $this->category ? $this->category->id : null;
-
+	//dd($this->property('songsPerPage'));
+	echo $this->property('songsPerPage');
         /*
          * List all the songs, eager load their categories
          */

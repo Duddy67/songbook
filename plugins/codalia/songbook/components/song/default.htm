@@ -2,6 +2,7 @@
 
 <h3>{{ song.title }}</h3>
 <div class="content">{{ song.lyrics|raw }}</div>
+	<?= e(trans('codalia.songbook::lang.action.new')) ?>
 
 {% if song.featured_images.count %}
     <div class="featured-images text-center">
@@ -26,4 +27,14 @@
     {% endif %}
     on {{ song.published_at|date('M d, Y') }}
 </p>
+
+{% set previous, next = __SELF__.previousSong(), __SELF__.nextSong() %}
+
+{% if previous %}
+  <p>&lt;&lt; <a href="{{ previous.url }}"/>{{ previous.title }}</a></p>
+{% endif %}
+
+{% if next %}
+  <p><a href="{{ next.url }}"/>{{ next.title }}</a> &gt;&gt;</p>
+{% endif %}
 
