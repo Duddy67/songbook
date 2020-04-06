@@ -139,17 +139,17 @@ class Plugin extends PluginBase
 
     public function registerSettings()
     {
-      return [
-	  'songbook' => [
-	      'label'       => 'Song Book',
-	      'description' => 'Manage available user countries and states.',
-	      'category'    => 'SONG BOOK',
-	      'icon'        => 'icon-music',
-	      'class' => 'Codalia\SongBook\Models\Settings',
-	      'order'       => 500,
-	      'keywords'    => 'geography place placement',
-	      'permissions' => ['codalia.songbook.manage_settings']
-	  ]
-      ];
+	return [
+	    'songbook' => [
+		'label'       => 'Song Book',
+		'description' => 'Manage available user countries and states.',
+		'category'    => 'SONG BOOK',
+		'icon'        => 'icon-music',
+		'class' => 'Codalia\SongBook\Models\Settings',
+		'order'       => 500,
+		'keywords'    => 'geography place placement',
+		'permissions' => ['codalia.songbook.manage_settings']
+	    ]
+	];
     }
 }

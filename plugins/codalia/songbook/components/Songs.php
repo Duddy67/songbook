@@ -76,47 +76,48 @@ class Songs extends ComponentBase
                 'title'       => 'codalia.songbook::lang.settings.songs_pagination',
                 'description' => 'codalia.songbook::lang.settings.songs_pagination_description',
                 'type'        => 'string',
-                'default'     => '{{ :page }}',
+                'default'     => '{{ :page }}'
             ],
             'categoryFilter' => [
                 'title'       => 'codalia.songbook::lang.settings.songs_filter',
                 'description' => 'codalia.songbook::lang.settings.songs_filter_description',
-                'type'        => 'string',
                 'default'     => '',
+                'type'        => 'string',
             ],
             'songsPerPage' => [
                 'title'             => 'codalia.songbook::lang.settings.songs_per_page',
+                'default'           => 5,
                 'type'              => 'string',
                 'validationPattern' => '^[0-9]+$',
                 'validationMessage' => 'codalia.songbook::lang.settings.songs_per_page_validation',
-                'default'           => '10',
+                'showExternalParam' => false
             ],
             'noSongsMessage' => [
                 'title'             => 'codalia.songbook::lang.settings.songs_no_songs',
                 'description'       => 'codalia.songbook::lang.settings.songs_no_songs_description',
                 'type'              => 'string',
                 'default'           => Lang::get('codalia.songbook::lang.settings.songs_no_songs_default'),
-                'showExternalParam' => false,
+                'showExternalParam' => false
             ],
             'sortOrder' => [
                 'title'       => 'codalia.songbook::lang.settings.songs_order',
                 'description' => 'codalia.songbook::lang.settings.songs_order_description',
                 'type'        => 'dropdown',
-                'default'     => 'published_at desc',
+                'default'     => 'published_at desc'
             ],
             'categoryPage' => [
                 'title'       => 'codalia.songbook::lang.settings.songs_category',
                 'description' => 'codalia.songbook::lang.settings.songs_category_description',
                 'type'        => 'dropdown',
                 'default'     => 'songbook/category',
-                'group'       => 'codalia.songbook::lang.settings.group_links',
+                'group'       => 'codalia.songbook::lang.settings.group_links'
             ],
             'songPage' => [
                 'title'       => 'codalia.songbook::lang.settings.songs_song',
                 'description' => 'codalia.songbook::lang.settings.songs_song_description',
                 'type'        => 'dropdown',
                 'default'     => 'songbook/song',
-                'group'       => 'codalia.songbook::lang.settings.group_links',
+                'group'       => 'codalia.songbook::lang.settings.group_links'
             ],
             'exceptSong' => [
                 'title'             => 'codalia.songbook::lang.settings.songs_except_song',
@@ -125,7 +126,7 @@ class Songs extends ComponentBase
                 'validationPattern' => '^[a-z0-9\-_,\s]+$',
                 'validationMessage' => 'codalia.songbook::lang.settings.songs_except_song_validation',
                 'default'           => '',
-                'group'             => 'codalia.songbook::lang.settings.group_exceptions',
+                'group'             => 'codalia.songbook::lang.settings.group_exceptions'
             ],
             'exceptCategories' => [
                 'title'             => 'codalia.songbook::lang.settings.songs_except_categories',
@@ -134,8 +135,8 @@ class Songs extends ComponentBase
                 'validationPattern' => '^[a-z0-9\-_,\s]+$',
                 'validationMessage' => 'codalia.songbook::lang.settings.songs_except_categories_validation',
                 'default'           => '',
-                'group'             => 'codalia.songbook::lang.settings.group_exceptions',
-            ],
+                'group'             => 'codalia.songbook::lang.settings.group_exceptions'
+            ]
         ];
     }
 
@@ -195,8 +196,7 @@ class Songs extends ComponentBase
     protected function listSongs()
     {
         $category = $this->category ? $this->category->id : null;
-	//dd($this->property('songsPerPage'));
-	echo $this->property('songsPerPage');
+
         /*
          * List all the songs, eager load their categories
          */
