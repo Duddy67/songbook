@@ -192,7 +192,7 @@ class Song extends Model
             $params['month'] = $this->published_up->format('m');
             $params['day']   = $this->published_up->format('d');
         }
-
+file_put_contents('debog_file.txt', print_r($params, true)); 
         return $this->url = $controller->pageUrl($pageName, $params);
     }
 

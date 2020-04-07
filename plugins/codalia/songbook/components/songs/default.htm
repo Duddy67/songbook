@@ -4,7 +4,6 @@
     {% for song in songs %}
         <li>
             <h3><a href="{{ song.url }}">{{ song.title }}</a></h3>
-
             <p class="info">
                 Posted
                 {% if song.categories.count %} in {% endif %}
