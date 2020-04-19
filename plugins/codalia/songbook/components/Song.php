@@ -4,6 +4,7 @@ use Cms\Classes\Page;
 use Cms\Classes\ComponentBase;
 use Codalia\SongBook\Models\Song as SongItem;
 
+
 class Song extends ComponentBase
 {
     /**
@@ -53,6 +54,10 @@ class Song extends ComponentBase
     {
         $this->categoryPage = $this->page['categoryPage'] = $this->property('categoryPage');
         $this->song = $this->page['song'] = $this->loadSong();
+
+	if (!$this->song->canView()) {
+	    return \Redirect::to(403);
+	}
     }
 
     public function onRender()

@@ -20,6 +20,7 @@ return [
       'new_song' => 'New song',
       'filter_category' => 'Category',
       'filter_date' => 'Date',
+      'filter_status' => 'Status',
       'reorder' => 'Reorder Songs',
       'return_to_songs' => 'Return to the song list',
     ],
@@ -53,6 +54,8 @@ return [
       'status' => 'Status',
       'published_up' => 'Start publishing',
       'published_down' => 'Finish publishing',
+      'access' => 'Access',
+      'viewing_access' => 'Viewing access',
     ],
     'status' => [
       'published' => 'Published',

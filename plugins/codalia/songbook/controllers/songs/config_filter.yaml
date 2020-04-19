@@ -32,7 +32,7 @@ scopes:
 
 
     status:
-        label: Status
+        label: codalia.songbook::lang.songs.filter_status
         type: group
         conditions: status in (:filtered)
         options:

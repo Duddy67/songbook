@@ -78,7 +78,7 @@ secondaryTabs:
             tab: codalia.songbook::lang.attribute.tab_manage
             label: codalia.songbook::lang.attribute.created_by
             type: relation
-            select: concat(first_name, " ",last_name)
+            select: concat(first_name, ' ', last_name)
             permissions: codalia.songbook.access_other_songs
 
         # Read-only information field for users without other_songs access.
@@ -102,6 +102,12 @@ secondaryTabs:
             label: codalia.songbook::lang.attribute.updated_by
             context: [update]
             disabled: true
+
+        usergroup:
+            tab: codalia.songbook::lang.attribute.tab_manage
+            label: codalia.songbook::lang.attribute.viewing_access
+            type: relation
+            emptyOption: Public
 
         id:
             tab: codalia.songbook::lang.attribute.tab_manage

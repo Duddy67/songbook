@@ -3,11 +3,13 @@
 use Lang;
 use Html;
 use Model;
+use Auth;
 use BackendAuth;
 use October\Rain\Support\Str;
 use October\Rain\Database\Traits\Validation;
 use Carbon\Carbon;
 use Codalia\SongBook\Models\Settings;
+use Db;
 
 
 /**
@@ -98,7 +100,8 @@ class Song extends Model
     ];
     public $hasMany = [];
     public $belongsTo = [
-        'user' => ['Backend\Models\User', 'key' => 'created_by']
+        'user' => ['Backend\Models\User', 'key' => 'created_by'],
+        'usergroup' => ['RainLab\User\Models\UserGroup', 'key' => 'access_id'],
     ];
     public $belongsToMany = [
         'categories' => [
@@ -122,18 +125,17 @@ class Song extends Model
 		   'archived' => 'codalia.songbook::lang.status.archived');
     }
 
+    public function getUserRoleOptions() {
+        $results = Db::table('backend_user_roles')->select('code', 'name')->where('code', '!=', '')->get();
 
-    public function getCreatedByFieldAttribute() {
-      $names = '';
+        $options = array();
 
-      if($this->created_by) {
-	$user = BackendAuth::findUserById($this->created_by);
-	$names = $user->first_name.' '.$user->last_name;
-      }
+	foreach ($results as $option) {
+	    $options[$option->code] = $option->name;
+	}
 
-      return $names;
+	return $options;
     }
-
 
     public function getUpdatedByFieldAttribute() {
       $names = '';
@@ -164,7 +166,7 @@ class Song extends Model
     }*/
 
 
-    public function beforeSave()
+    public function beforeUpdate()
     {
       $user = BackendAuth::getUser();
       $this->updated_by = $user->id;
@@ -192,7 +194,7 @@ class Song extends Model
             $params['month'] = $this->published_up->format('m');
             $params['day']   = $this->published_up->format('d');
         }
-file_put_contents('debog_file.txt', print_r($params, true)); 
+
         return $this->url = $controller->pageUrl($pageName, $params);
     }
 
@@ -239,6 +241,25 @@ file_put_contents('debog_file.txt', print_r($params, true));
         return ($this->created_by == $user->id) || $user->hasAnyAccess(['codalia.songbook.access_other_songs']);
     }
 
+    public function canView()
+    {
+        //var_dump($this->access_id);
+	if ($this->access_id === null) {
+	    return true;
+	}
+
+	if (Auth::check()) {
+	    $userGroups = Auth::getUser()->getGroups();
+
+	    foreach ($userGroups as $userGroup) {
+	      if ($userGroup->id == $this->access_id) {
+		  return true;
+	      }
+	    }
+	}
+
+	return false;
+    }
 
     /**
      * Allows filtering for specific categories.

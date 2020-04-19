@@ -21,9 +21,18 @@ columns:
         type: partial
         path: ~/plugins/codalia/songbook/models/song/_status_column.htm
 
-    _created_by_field:
+    access:
+        label: codalia.songbook::lang.attribute.access
+        relation: usergroup
+        select: name
+        default: 'Public'
+        select: codalia_songbook_songs.access_id
+        sortable: true
+
+    created_by:
         label: codalia.songbook::lang.attribute.created_by
-        select: codalia_songbook_songs.created_by
+        select: concat(first_name, ' ', last_name)
+        relation: user
         sortable: true
 
     created_at:

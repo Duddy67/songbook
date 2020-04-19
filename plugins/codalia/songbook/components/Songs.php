@@ -7,6 +7,7 @@ use Cms\Classes\ComponentBase;
 use Codalia\SongBook\Models\Song;
 use Codalia\SongBook\Models\Category as SongCategory;
 use Codalia\SongBook\Models\Settings as SongSettings;
+use Auth;
 
 
 class Songs extends ComponentBase
@@ -162,6 +163,21 @@ class Songs extends ComponentBase
         return $options;
     }
 
+    public function getUserGroupIds()
+    {
+        $ids = array();
+
+	if (Auth::check()) {
+	    $userGroups = Auth::getUser()->getGroups();
+
+	    foreach ($userGroups as $userGroup) {
+	        $ids[] = $userGroup->id;
+	    }
+	}
+
+	return $ids;
+    }
+
     public function onRun()
     {
         $this->prepareVars();
@@ -176,7 +192,7 @@ class Songs extends ComponentBase
             $currentPage = $this->property('pageNumber');
 
             if ($currentPage > ($lastPage = $this->songs->lastPage()) && $currentPage > 1) {
-                return Redirect::to($this->currentPageUrl([$pageNumberParam => $lastPage]));
+                return \Redirect::to($this->currentPageUrl([$pageNumberParam => $lastPage]));
             }
         }
     }
@@ -204,8 +220,12 @@ class Songs extends ComponentBase
 	$isPublished = true;
 
 	$songs = Song::whereHas('categories', function ($query) {
-	        // Gets songs which have at least one published category.
-		$query->where('status', 'published');
+	        // Gets songs which have at least one published category and match the
+	        // groups of the current user.
+		$query->where('status', 'published')->where(function($query) { 
+	                                                    $query->whereIn('access_id', $this->getUserGroupIds()) 
+							          ->orWhereNull('access_id');
+	                                                });
 	})->with(['categories' => function ($query) {
 	        // Gets published categories only.
 		$query->where('status', 'published');
@@ -224,15 +244,22 @@ class Songs extends ComponentBase
                 : preg_split('/,\s*/', $this->property('exceptCategories'), -1, PREG_SPLIT_NO_EMPTY),
         ]);
 
+	foreach ($songs as $key => $song) {
+	    $song->canView();
+	    /*if (!$song->canView()) {
+	        unset($songs[$key]);
+	    }*/
+	}
+
         /*
          * Add a "url" helper attribute for linking to each song and category
          */
-        $songs->each(function($song) {
-            $song->setUrl($this->songPage, $this->controller);
+        $songs->each(function($song, $key) {
+	    $song->setUrl($this->songPage, $this->controller);
 
-            $song->categories->each(function($category) {
-                $category->setUrl($this->categoryPage, $this->controller);
-            });
+	    $song->categories->each(function($category) {
+		$category->setUrl($this->categoryPage, $this->controller);
+	    });
         });
 
         return $songs;

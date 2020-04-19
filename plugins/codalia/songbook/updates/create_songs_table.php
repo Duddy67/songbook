@@ -17,6 +17,7 @@ class CreateSongsTable extends Migration
             $table->text('lyrics')->nullable();
             $table->text('notes')->nullable();
             $table->char('status', 15)->default('unpublished');
+	    $table->integer('access_id')->unsigned()->nullable()->index();
 	    $table->integer('created_by')->unsigned()->nullable()->index();
 	    $table->integer('updated_by')->unsigned();
 	    $table->timestamp('published_up')->nullable();
