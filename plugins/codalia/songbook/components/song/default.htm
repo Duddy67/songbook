@@ -19,10 +19,9 @@
 {% endif %}
 
 <p class="info">
-    Posted
-    {% if song.categories.count %} in
+Posted in <a href="{{ song.category.url }}">{{ song.category.name }}</a>{% if song.categories.count %},  
         {% for category in song.categories %}
-            <a href="{{ category.url }}">{{ category.name }}</a>{% if not loop.last %}, {% endif %}
+	    <a href="{{ category.url }}">{{ category.name }}</a>{% if not loop.last %}, {% endif %}
         {% endfor %}
     {% endif %}
     on {{ song.published_at|date('M d, Y') }}

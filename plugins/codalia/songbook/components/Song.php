@@ -58,6 +58,10 @@ class Song extends ComponentBase
 	if (!$this->song->canView()) {
 	    return \Redirect::to(403);
 	}
+
+	if ($this->song->category->status != 'published') {
+	    return \Redirect::to(404);
+	}
     }
 
     public function onRender()
@@ -74,7 +78,11 @@ class Song extends ComponentBase
         $song = new SongItem;
 
 	// Retrieves the song on the basis of its slug.
-	$song = $song->where('slug', $slug);
+	$song = $song->where('slug', $slug)
+	             ->with(['categories' => function ($query) {
+		            // Gets only published categories.
+			    $query->where('status', 'published');
+		     }]);
 
         /*if (!$this->checkEditor()) {
             $song = $song->isPublished();
@@ -87,12 +95,22 @@ class Song extends ComponentBase
             return $this->controller->run('404');
         }
 
+        // Add a "url" helper attribute for linking to the main category.
+	$song->category->setUrl($this->categoryPage, $this->controller);
+
         /*
-         * Add a "url" helper attribute for linking to each category
+         * Add a "url" helper attribute for linking to each extra category
          */
         if ($song && $song->categories->count()) {
-            $song->categories->each(function($category) {
-                $category->setUrl($this->categoryPage, $this->controller);
+            $song->categories->each(function($category, $key) use($song) {
+	        // An extra category matches the main category.
+	        if ($category->id == $song->category_id) {
+		    // Removes this category from the list.
+		    $song->categories->forget($key);
+		}
+		else {
+		    $category->setUrl($this->categoryPage, $this->controller);
+		}
             });
         }
 

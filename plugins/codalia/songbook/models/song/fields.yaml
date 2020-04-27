@@ -26,6 +26,11 @@ secondaryTabs:
             type: richeditor
             stretch: true
 
+        category:
+            tab: codalia.songbook::lang.song.tab_categories
+            label: codalia.songbook::lang.attribute.main_category
+            type: relation
+
         categories:
             tab: codalia.songbook::lang.song.tab_categories
             type: relation

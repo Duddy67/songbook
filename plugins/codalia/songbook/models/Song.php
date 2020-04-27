@@ -102,6 +102,7 @@ class Song extends Model
     public $belongsTo = [
         'user' => ['Backend\Models\User', 'key' => 'created_by'],
         'usergroup' => ['RainLab\User\Models\UserGroup', 'key' => 'access_id'],
+        'category' => ['Codalia\SongBook\Models\Category'],
     ];
     public $belongsToMany = [
         'categories' => [

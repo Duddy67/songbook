@@ -163,9 +163,9 @@ class Songs extends ComponentBase
         return $options;
     }
 
-    public function getUserGroupIds()
+    public static function getUserGroupIds()
     {
-        $ids = array();
+        $ids = [];
 
 	if (Auth::check()) {
 	    $userGroups = Auth::getUser()->getGroups();
@@ -219,14 +219,14 @@ class Songs extends ComponentBase
         //$isPublished = !$this->checkEditor();
 	$isPublished = true;
 
-	$songs = Song::whereHas('categories', function ($query) {
-	        // Gets songs which have at least one published category and match the
-	        // groups of the current user.
-		$query->where('status', 'published')->where(function($query) { 
-	                                                    $query->whereIn('access_id', $this->getUserGroupIds()) 
-							          ->orWhereNull('access_id');
-	                                                });
-	})->with(['categories' => function ($query) {
+	$songs = Song::whereHas('category', function ($query) {
+	        // Songs must have their main category published.
+		$query->where('status', 'published');
+	})->where(function($query) { 
+	        // Gets songs which match the groups of the current user.
+		$query->whereIn('access_id', self::getUserGroupIds()) 
+		      ->orWhereNull('access_id');
+        })->with(['categories' => function ($query) {
 	        // Gets published categories only.
 		$query->where('status', 'published');
 	}])->listFrontEnd([
@@ -244,21 +244,21 @@ class Songs extends ComponentBase
                 : preg_split('/,\s*/', $this->property('exceptCategories'), -1, PREG_SPLIT_NO_EMPTY),
         ]);
 
-	foreach ($songs as $key => $song) {
-	    $song->canView();
-	    /*if (!$song->canView()) {
-	        unset($songs[$key]);
-	    }*/
-	}
-
         /*
          * Add a "url" helper attribute for linking to each song and category
          */
         $songs->each(function($song, $key) {
 	    $song->setUrl($this->songPage, $this->controller);
 
-	    $song->categories->each(function($category) {
-		$category->setUrl($this->categoryPage, $this->controller);
+	    $song->categories->each(function($category, $key) use($song) {
+	        // An extra category matches the main category.
+	        if ($category->id == $song->category_id) {
+		    // Removes this category from the list.
+		    $song->categories->forget($key);
+		}
+		else {
+		    $category->setUrl($this->categoryPage, $this->controller);
+		}
 	    });
         });
 
