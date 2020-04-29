@@ -28,8 +28,9 @@ secondaryTabs:
 
         category:
             tab: codalia.songbook::lang.song.tab_categories
-            label: codalia.songbook::lang.attribute.main_category
+            label: codalia.songbook::lang.attribute.category
             type: relation
+            required: true
 
         categories:
             tab: codalia.songbook::lang.song.tab_categories

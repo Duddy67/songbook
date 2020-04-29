@@ -8,9 +8,9 @@ columns:
         searchable: true
         sortable: true
 
-    categories:
-        label: codalia.songbook::lang.songbook.categories
-        relation: categories
+    category:
+        label: codalia.songbook::lang.attribute.category
+        relation: category
         select: name
         searchable: true
         sortable: false

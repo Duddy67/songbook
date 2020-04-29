@@ -4,6 +4,8 @@
     - create_songs_table.php
     - 'Created table codalia_songbook_categories_table'
     - create_categories_table.php
+    - 'Created table codalia_songbook_orderings_table'
+    - create_orderings_table.php
     - 'Seeded codalia_songbook_songs table'
     - seed_table.php
 

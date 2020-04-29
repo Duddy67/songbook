@@ -56,7 +56,7 @@ return [
       'published_down' => 'Finish publishing',
       'access' => 'Access',
       'viewing_access' => 'Viewing access',
-      'main_category' => 'Main category',
+      'category' => 'Category',
     ],
     'status' => [
       'published' => 'Published',

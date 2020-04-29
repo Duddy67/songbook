@@ -7,28 +7,28 @@ use Codalia\SongBook\Models\Category;
 class SeedSongBookTables extends Seeder
 {
 
-    public $songs = [['title' => 'Come Together', 'slug' => 'come-together'],
-		     ['title' => 'Heartbreak Hotel', 'slug' => 'heartbreak-hotel'],
-		     ['title' => 'Hoochie Coochie Man', 'slug' => 'hoochie-coochie-man'],
-		     ['title' => 'I\'m In The Mood', 'slug' => 'i-m-in-the-mood'],
-		     ['title' => 'Johnny B. Good', 'slug' => 'johnny-b-good'],
-		     ['title' => 'Jumping Jack Flash', 'slug' => 'jumping-jack-flash'],
-		     ['title' => 'Layla', 'slug' => 'layla'],
-		     ['title' => 'Light My Fire', 'slug' => 'light-my-fire'],
-		     ['title' => 'Like A Rolling Stone', 'slug' => 'like-a-rolling-stone'],
-		     ['title' => 'Message In The Bottle', 'slug' => 'message-in-the-bottle'],
-		     ['title' => 'Miss You', 'slug' => 'miss-you'],
-		     ['title' => 'My Baby Just Cares For Me', 'slug' => 'my-baby-just-cares-for-me'],
-		     ['title' => 'My Funny Valentine', 'slug' => 'my-funny-valentine'],
-		     ['title' => 'My Man', 'slug' => 'my-man'],
-		     ['title' => 'Purple Haze', 'slug' => 'purple-haze'],
-		     ['title' => 'Rolling Stone Blues', 'slug' => 'rolling-stone-blues'],
-		     ['title' => 'Somethin\' Stupid', 'slug' => 'somethin-stupid'],
-		     ['title' => 'Strangers In The Night', 'slug' => 'strangers-in-the-night'],
-		     ['title' => 'The Sound Of Silence', 'slug' => 'the-sound-of-silence'],
-		     ['title' => 'Whole Lotta Love', 'slug' => 'whole-lotta-love'],
-		     ['title' => 'Yesterday', 'slug' => 'yesterday'],
-		     ['title' => 'Ziggy Stardust', 'slug' => 'ziggy-stardust']
+    public $songs = [['title' => 'Come Together', 'slug' => 'come-together', 'category_id' => 12],
+		     ['title' => 'Heartbreak Hotel', 'slug' => 'heartbreak-hotel', 'category_id' => 21],
+		     ['title' => 'Hoochie Coochie Man', 'slug' => 'hoochie-coochie-man', 'category_id' => 25],
+		     ['title' => 'I\'m In The Mood', 'slug' => 'i-m-in-the-mood', 'category_id' => 18],
+		     ['title' => 'Johnny B. Good', 'slug' => 'johnny-b-good', 'category_id' => 22],
+		     ['title' => 'Jumping Jack Flash', 'slug' => 'jumping-jack-flash', 'category_id' => 15],
+		     ['title' => 'Layla', 'slug' => 'layla', 'category_id' => 26],
+		     ['title' => 'Light My Fire', 'slug' => 'light-my-fire', 'category_id' => 13],
+		     ['title' => 'Like A Rolling Stone', 'slug' => 'like-a-rolling-stone', 'category_id' => 20],
+		     ['title' => 'Message In The Bottle', 'slug' => 'message-in-the-bottle', 'category_id' => 14],
+		     ['title' => 'Miss You', 'slug' => 'miss-you', 'category_id' => 15],
+		     ['title' => 'My Baby Just Cares For Me', 'slug' => 'my-baby-just-cares-for-me', 'category_id' => 29],
+		     ['title' => 'My Funny Valentine', 'slug' => 'my-funny-valentine', 'category_id' => 31],
+		     ['title' => 'My Man', 'slug' => 'my-man', 'category_id' => 19],
+		     ['title' => 'Purple Haze', 'slug' => 'purple-haze', 'category_id' => 17],
+		     ['title' => 'Rolling Stone Blues', 'slug' => 'rolling-stone-blues', 'category_id' => 25],
+		     ['title' => 'Somethin\' Stupid', 'slug' => 'somethin-stupid', 'category_id' => 24],
+		     ['title' => 'Strangers In The Night', 'slug' => 'strangers-in-the-night', 'category_id' => 24],
+		     ['title' => 'The Sound Of Silence', 'slug' => 'the-sound-of-silence', 'category_id' => 27],
+		     ['title' => 'Whole Lotta Love', 'slug' => 'whole-lotta-love', 'category_id' => 30],
+		     ['title' => 'Yesterday', 'slug' => 'yesterday', 'category_id' => 12],
+		     ['title' => 'Ziggy Stardust', 'slug' => 'ziggy-stardust', 'category_id' => 16]
     ];
 
     public $categories = [['name' => 'Style', 'slug' => 'style'],
@@ -69,11 +69,15 @@ class SeedSongBookTables extends Seeder
     {
       foreach ($this->songs as $key => $song) {
 	$order = $key + 1;
+	$day = (string)$order;
+	if ($order < 10) {
+	  $day = '0'.$order;
+	}
 
-	Song::create(['title' => $song['title'], 'slug' => $song['slug'], 
+	Song::create(['title' => $song['title'], 'slug' => $song['slug'], 'category_id' => $song['category_id'],
 		     'lyrics' => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>', 
 		     'status' => 'published', 'created_by' => 1, 'updated_by' => 1, 'sort_order' => $order,
-		     'created_at' => '2020-03-16 04:35:00', 'published_up' => '2020-03-16 04:35:00']);
+		     'created_at' => '2020-03-'.$day.' 04:35:00', 'published_up' => '2020-04-'.$day.' 17:08:54']);
       }
 
       foreach ($this->categories as $category) {
