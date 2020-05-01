@@ -1,0 +1,11 @@
+<div class="relation-widget" id="<?= $this->getId() ?>">
+  <?php $path = '~/modules/backend/widgets/form/partials/';
+	if ($field->fieldName == 'categories') {
+	    // Uses the songbook partials.
+	    $path = '~/plugins/codalia/songbook/models/song/';
+	}
+  ?>
+
+  <?= $this->makePartial($path.'_field_'.$field->type.'.htm', ['field' => $field]) ?>
+  <?php var_dump($this->model->category_id); ?>
+</div>

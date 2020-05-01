@@ -53,9 +53,9 @@ class Songs extends Controller
 	return $this->asExtension('FormController')->create();
     }
 
-    public function update($recordId = null)
+    public function update($recordId = null, $context = null)
     {
-        return $this->asExtension('FormController')->update($recordId);
+        return $this->asExtension('FormController')->update($recordId, $context);
     }
 
     public function listExtendQuery($query)
@@ -117,6 +117,7 @@ class Songs extends Controller
 
     public function update_onSave($recordId = null, $context = null)
     {
+      //var_dump($this);
       //$fieldMarkup = $this->formGetWidget()->renderField('updated_at', ['useContainer' => true]);
 
       /*return [

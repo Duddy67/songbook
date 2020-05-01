@@ -8,6 +8,7 @@ use RainLab\User\Models\User as UserModel;
 use RainLab\User\Controllers\Users as UsersController;
 use RainLab\User\Models\UserGroup;
 use Codalia\SongBook\Models\Song;
+use Backend\FormWidgets\Relation;
 use Event;
 use Db;
 
@@ -58,6 +59,11 @@ class Plugin extends PluginBase
 	    $model->hasMany['songs'] = ['Codalia\SongBook\Models\Song', 'key' => 'access_id'];
 	});
       }
+
+      // Extends the partial files used for the relation type fields.
+      Relation::extend(function ($widget) {
+	  $widget->addViewPath(['$/codalia/songbook/models/song']);
+      });
     }
 
     /**
