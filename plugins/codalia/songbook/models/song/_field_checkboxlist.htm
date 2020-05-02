@@ -37,7 +37,6 @@
     </div>
 
 <?php elseif (!$readOnly && count($fieldOptions)): ?>
-TEST
     <div class="field-checkboxlist <?= $isScrollable ? 'is-scrollable' : '' ?>">
         <?php if ($quickselectEnabled): ?>
             <!-- Quick selection -->
@@ -55,7 +54,7 @@ TEST
             </div>
         <?php endif ?>
 
-        <div class="field-checkboxlist-inner" id="my_partial">
+        <div class="field-checkboxlist-inner" id="song-categories">
 
             <?php if ($isScrollable): ?>
                 <!-- Scrollable Checkbox list -->
@@ -73,7 +72,6 @@ TEST
                     $index++;
                     $checkboxId = 'checkbox_'.$field->getId().'_'.$index;
                     if (is_string($option)) $option = [$option];
-		    echo $this->model->category_id;
                 ?>
                 <div class="checkbox custom-checkbox">
                     <input
