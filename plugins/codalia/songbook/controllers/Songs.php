@@ -2,6 +2,7 @@
 
 use Flash;
 use Lang;
+use Carbon\Carbon;
 use BackendMenu;
 use Backend\Classes\Controller;
 use Codalia\SongBook\Models\Song;
@@ -104,6 +105,8 @@ class Songs extends Controller
 	foreach ($checkedIds as $songId) {
 	  $song = Song::find($songId);
 	  $song->status = $status;
+	  // In case the record has never been published before. 
+	  $song->published_up = ($song->status == 'published' && is_null($song->published_up)) ? Carbon::now() : $song->published_up;
 	  $song->save();
 	}
 
@@ -117,14 +120,6 @@ class Songs extends Controller
 
     public function update_onSave($recordId = null, $context = null)
     {
-      //var_dump($this);
-      //$fieldMarkup = $this->formGetWidget()->renderField('updated_at', ['useContainer' => true]);
-
-      /*return [
-	'#field-id' => $fieldMarkup
-      ];*/
-
-      //$this->formRenderField('update_at', ['useContainer'=>false]);
       // Calls the original update_onSave method
       return $this->asExtension('FormController')->update_onSave($recordId, $context);
     }

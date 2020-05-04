@@ -169,8 +169,9 @@ class Song extends Model
 
     public function beforeUpdate()
     {
-      $user = BackendAuth::getUser();
-      $this->updated_by = $user->id;
+	$this->published_up = ($this->status == 'published' && is_null($this->published_up)) ? Carbon::now() : $this->published_up;
+	$user = BackendAuth::getUser();
+	$this->updated_by = $user->id;
     }
 
     /**
@@ -263,19 +264,6 @@ class Song extends Model
     }
 
     /**
-     * Allows filtering for specific categories.
-     * @param  Illuminate\Query\Builder  $query      QueryBuilder
-     * @param  array                     $categories List of category ids
-     * @return Illuminate\Query\Builder              QueryBuilder
-     */
-    public function scopeFilterCategories($query, $categories)
-    {
-        return $query->whereHas('categories', function($q) use ($categories) {
-            $q->whereIn('id', $categories);
-        });
-    }
-
-    /**
      * Returns the HTML content before the <!-- more --> tag or a limited 600
      * character version.
      *
@@ -297,6 +285,19 @@ class Song extends Model
     //
     // Scopes
     //
+
+    /**
+     * Allows filtering for specific categories.
+     * @param  Illuminate\Query\Builder  $query      QueryBuilder
+     * @param  array                     $categories List of category ids
+     * @return Illuminate\Query\Builder              QueryBuilder
+     */
+    public function scopeFilterCategories($query, $categories)
+    {
+        return $query->whereHas('categories', function($q) use ($categories) {
+            $q->whereIn('id', $categories);
+        });
+    }
 
     public function scopeIsPublished($query)
     {
@@ -482,7 +483,7 @@ class Song extends Model
                 $q->whereIn('id', $categories);
             });
         }
-
+//dd($query->toSql());
         return $query->paginate($perPage, $page);
     }
 }
