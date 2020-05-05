@@ -156,20 +156,22 @@ class Song extends Model
       return Lang::get($statuses[$status]);
     }
 
-    /*public function beforeCreate()
+    public function beforeCreate()
     {
-      if(empty($this->slug)) {
-	$this->slug = Str::slug($this->title);
-      }
+	if(empty($this->slug)) {
+	  $this->slug = Str::slug($this->title);
+	}
 
-      $user = BackendAuth::getUser();
-      $this->created_by = $user->id;
-    }*/
-
+	$this->published_up = self::setPublishingDate($this);
+	//$this->published_up = ($this->status == 'published' && is_null($this->published_up)) ? Carbon::now() : $this->published_up;
+	$user = BackendAuth::getUser();
+	$this->created_by = $user->id;
+    }
 
     public function beforeUpdate()
     {
-	$this->published_up = ($this->status == 'published' && is_null($this->published_up)) ? Carbon::now() : $this->published_up;
+	//$this->published_up = ($this->status == 'published' && is_null($this->published_up)) ? Carbon::now() : $this->published_up;
+	$this->published_up = self::setPublishingDate($this);
 	$user = BackendAuth::getUser();
 	$this->updated_by = $user->id;
     }
@@ -230,6 +232,12 @@ class Song extends Model
 	if (isset($fields->_created_by_field) && $user->hasAccess('codalia.songbook.access_other_songs')) {
             $fields->_created_by_field->hidden = true;
         }
+    }
+
+    public static function setPublishingDate($song)
+    {
+	// Sets to the current date time in case the record has never been published before. 
+	return ($song->status == 'published' && is_null($song->published_up)) ? Carbon::now() : $song->published_up;
     }
 
     /**

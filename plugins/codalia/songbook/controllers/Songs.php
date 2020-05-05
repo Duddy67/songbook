@@ -105,8 +105,8 @@ class Songs extends Controller
 	foreach ($checkedIds as $songId) {
 	  $song = Song::find($songId);
 	  $song->status = $status;
-	  // In case the record has never been published before. 
-	  $song->published_up = ($song->status == 'published' && is_null($song->published_up)) ? Carbon::now() : $song->published_up;
+	  //$song->published_up = ($song->status == 'published' && is_null($song->published_up)) ? Carbon::now() : $song->published_up;
+	  $song->published_up = Song::setPublishingDate($song);
 	  $song->save();
 	}
 

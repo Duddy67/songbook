@@ -28,7 +28,7 @@ return [
       'title_placeholder' => 'New song title',
       'slug_placeholder' => 'new-song-slug',
       'tab_categories' => 'Categories',
-      'categories_comment' => 'Select extra categories for the song',
+      'categories_comment' => 'Select categories for the song',
       'categories_placeholder' => 'There are no categories, you should create one first!',
     ],
     'categories' => [
@@ -57,6 +57,7 @@ return [
       'access' => 'Access',
       'viewing_access' => 'Viewing access',
       'category' => 'Category',
+      'main_category' => 'Main category',
     ],
     'status' => [
       'published' => 'Published',
