@@ -74,6 +74,7 @@ class Category extends Model
       'songs_count' => ['Codalia\SongBook\Models\Song',
 	  'table' => 'codalia_songbook_categories_songs',
 	  'count' => true,
+	  'scope' => 'songCount',
       ],
  
     ];
@@ -144,11 +145,9 @@ class Category extends Model
             'id'   => $this->id,
             'slug' => $this->slug
         ];
-      //var_dump($controller->pageUrl($pageName, $params, false));
 
         return $this->url = $controller->pageUrl($pageName, $params, false);
     }
-
 
     protected static function listSubCategoryOptions()
     {

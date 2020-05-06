@@ -4,12 +4,13 @@ use Lang;
 use Html;
 use Model;
 use Auth;
+use Db;
 use BackendAuth;
 use October\Rain\Support\Str;
 use October\Rain\Database\Traits\Validation;
 use Carbon\Carbon;
 use Codalia\SongBook\Models\Settings;
-use Db;
+use Codalia\SongBook\Components\Songs;
 
 
 /**
@@ -163,14 +164,13 @@ class Song extends Model
 	}
 
 	$this->published_up = self::setPublishingDate($this);
-	//$this->published_up = ($this->status == 'published' && is_null($this->published_up)) ? Carbon::now() : $this->published_up;
+
 	$user = BackendAuth::getUser();
 	$this->created_by = $user->id;
     }
 
     public function beforeUpdate()
     {
-	//$this->published_up = ($this->status == 'published' && is_null($this->published_up)) ? Carbon::now() : $this->published_up;
 	$this->published_up = self::setPublishingDate($this);
 	$user = BackendAuth::getUser();
 	$this->updated_by = $user->id;
@@ -253,7 +253,6 @@ class Song extends Model
 
     public function canView()
     {
-        //var_dump($this->access_id);
 	if ($this->access_id === null) {
 	    return true;
 	}
@@ -293,6 +292,16 @@ class Song extends Model
     //
     // Scopes
     //
+
+    public function scopeSongCount($query)
+    {
+      // Ensures the song is published and access matches the groups of the current user.
+      return $query->where('status', 'published')
+	           ->where(function($query) { 
+			$query->whereIn('access_id', Songs::getUserGroupIds()) 
+			      ->orWhereNull('access_id');
+		    });
+    }
 
     /**
      * Allows filtering for specific categories.
@@ -491,7 +500,7 @@ class Song extends Model
                 $q->whereIn('id', $categories);
             });
         }
-//dd($query->toSql());
+
         return $query->paginate($perPage, $page);
     }
 }

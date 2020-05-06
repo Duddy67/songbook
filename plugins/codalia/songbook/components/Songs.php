@@ -251,14 +251,7 @@ class Songs extends ComponentBase
 	    $song->setUrl($this->songPage, $this->controller);
 
 	    $song->categories->each(function($category, $key) use($song) {
-	        // An extra category matches the main category.
-	        if ($category->id == $song->category_id) {
-		    // Removes this category from the list.
-		    $song->categories->forget($key);
-		}
-		else {
-		    $category->setUrl($this->categoryPage, $this->controller);
-		}
+		$category->setUrl($this->categoryPage, $this->controller);
 	    });
         });
 

@@ -5,11 +5,11 @@
         <li>
             <h3><a href="{{ song.url }}">{{ song.title }}</a></h3>
             <p class="info">
-		Posted in <a href="{{ song.category.url }}">{{ song.category.name }}</a>{% if song.categories.count %},  
-		  {% for category in song.categories %}
-		      <a href="{{ category.url }}">{{ category.name }}</a>{% if not loop.last %}, {% endif %}
-		  {% endfor %}
-		{% endif %}
+	        Posted
+                {% if song.categories.count %} in {% endif %}
+                {% for category in song.categories %}
+                    <a href="{{ category.url }}">{{ category.name }}</a>{% if not loop.last %}, {% endif %}
+                {% endfor %}
                 on {{ song.published_at|date('M d, Y') }}
             </p>
 
