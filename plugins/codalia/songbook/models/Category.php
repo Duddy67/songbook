@@ -63,7 +63,11 @@ class Category extends Model
      * @var array Relations
      */
     public $hasOne = [];
-    public $hasMany = [];
+    public $hasMany = [
+        'orderings' => [
+            'Codalia\SongBook\Models\Ordering',
+        ]
+    ];
     public $belongsTo = [];
     public $belongsToMany = [
       'songs' => ['Codalia\SongBook\Models\Song',

@@ -7,7 +7,6 @@ use BackendMenu;
 use Backend\Classes\Controller;
 use Codalia\SongBook\Models\Song;
 use Backend\Behaviors\FormController;
-use Backend\Behaviors\ReorderController;
 
 
 /**
@@ -18,17 +17,12 @@ class Songs extends Controller
     public $implement = [
         'Backend.Behaviors.FormController',
         'Backend.Behaviors.ListController',
-        'Backend.Behaviors.ReorderController',
     ];
 
     public $formConfig = 'config_form.yaml';
     public $listConfig = 'config_list.yaml';
-    public $reorderConfig = 'config_reorder.yaml';
 
     public $requiredPermissions = ['codalia.songbook.access_songs'];
-
-    // css status mapping.
-    public $statusIcons = ['published' => 'success', 'unpublished' => 'info', 'archived' => 'muted', 'trashed' => 'danger'];
 
 
     public function __construct()
@@ -41,7 +35,7 @@ class Songs extends Controller
 
     public function index()
     {
-	$this->vars['statusIcons'] = $this->statusIcons;
+	$this->vars['statusIcons'] = self::getStatusIcons();
 
 	// Calls the parent method as an extension.
         $this->asExtension('ListController')->index();
@@ -77,6 +71,9 @@ class Songs extends Controller
 
     public function index_onDelete()
     {
+	// Needed for the status column partial.
+	$this->vars['statusIcons'] = self::getStatusIcons();
+
 	if (($checkedIds = post('checked')) && is_array($checkedIds) && count($checkedIds)) {
 
             foreach ($checkedIds as $songId) {
@@ -97,7 +94,7 @@ class Songs extends Controller
     public function index_onSetStatus()
     {
       // Needed for the status column partial.
-      $this->vars['statusIcons'] = $this->statusIcons;
+      $this->vars['statusIcons'] = self::getStatusIcons();
 
       // Ensures one or more items are selected.
       if (($checkedIds = post('checked')) && is_array($checkedIds) && count($checkedIds)) {
@@ -124,49 +121,16 @@ class Songs extends Controller
       return $this->asExtension('FormController')->update_onSave($recordId, $context);
     }
 
-    public function reorder()
-    {
-	$this->vars['statusIcons'] = $this->statusIcons;
-	$this->addCss(url('plugins/codalia/songbook/assets/css/extra.css'));
-
-        $this->asExtension('ReorderController')->reorder();
-    }
-
-    public function getCurrentFilters($name = null) {
-        foreach (\Session::get('widget', []) as $key => $item) {
-            if (str_contains($key, 'Filter')) {
-                $filters = @unserialize(@base64_decode($item));
-                if ($filters) {
-		    if (array_key_exists('scope-'.$name, $filters)) {
-		        $filter = (isset($filters['scope-'.$name])) ? $filters['scope-'.$name] : [];
-		        return $filter;
-		    }
-
-		    return $filters;
-                }
-		else {
-		    return [];
-		}
-            }
-        }
-
-	return [];
-    }
-
-
-    public function reorderExtendQuery($query)
-    {
-        $category = $this->getCurrentFilters('category');
-
-        if (count($category) == 1) {
-	    $query->filterCategories(array_keys($category));
-	}
-    }
-
     public function listInjectRowClass($record, $definition = null)
     {
         if ($record->status == 'archived') {
             return 'safe disabled';
         }
+    }
+
+    public static function getStatusIcons()
+    {
+	// Returns the css status mapping.
+        return ['published' => 'success', 'unpublished' => 'info', 'archived' => 'muted', 'trashed' => 'danger']; 
     }
 }

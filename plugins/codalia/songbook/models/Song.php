@@ -6,6 +6,7 @@ use Model;
 use Auth;
 use Db;
 use BackendAuth;
+use Backend\Models\User;
 use October\Rain\Support\Str;
 use October\Rain\Database\Traits\Validation;
 use Carbon\Carbon;
@@ -19,7 +20,6 @@ use Codalia\SongBook\Components\Songs;
 class Song extends Model
 {
     use \October\Rain\Database\Traits\Validation;
-    use \October\Rain\Database\Traits\Sortable;
 
     /**
      * @var string The database table used by the model.
@@ -91,6 +91,8 @@ class Song extends Model
         'updated_at desc'   => 'codalia.songbook::lang.sorting.updated_desc',
         'published_up asc'  => 'codalia.songbook::lang.sorting.published_asc',
         'published_up desc' => 'codalia.songbook::lang.sorting.published_desc',
+        'sort_order asc'  => 'codalia.songbook::lang.sorting.order_asc',
+        'sort_order desc'  => 'codalia.songbook::lang.sorting.order_desc',
         'random'            => 'codalia.songbook::lang.sorting.random'
     ];
 
@@ -99,7 +101,11 @@ class Song extends Model
      */
     public $hasOne = [
     ];
-    public $hasMany = [];
+    public $hasMany = [
+        'orderings' => [
+            'Codalia\SongBook\Models\Ordering',
+        ]
+    ];
     public $belongsTo = [
         'user' => ['Backend\Models\User', 'key' => 'created_by'],
         'usergroup' => ['RainLab\User\Models\UserGroup', 'key' => 'access_id'],
@@ -166,7 +172,8 @@ class Song extends Model
 	$this->published_up = self::setPublishingDate($this);
 
 	$user = BackendAuth::getUser();
-	$this->created_by = $user->id;
+	// For whatever reason the user object is null when refreshing the plugin. 
+	$this->created_by = ($user !== null) ? $user->id : 1;
     }
 
     public function beforeUpdate()
@@ -174,6 +181,72 @@ class Song extends Model
 	$this->published_up = self::setPublishingDate($this);
 	$user = BackendAuth::getUser();
 	$this->updated_by = $user->id;
+    }
+
+    public function afterSave()
+    {
+        $this->setOrderings();
+	$this->reorderByCategory();
+    }
+
+    public function afterDelete()
+    {
+        // Deletes ordering rows linked to the deleted song.
+        $this->orderings()->where('song_id', $this->id)->delete();
+    }
+
+    public function setOrderings()
+    {
+        // Gets the category ids.
+	$newCatIds = $this->categories()->pluck('category_id')->all();
+	$oldCatIds = $this->orderings()->where('song_id', $this->id)->pluck('category_id')->all();
+
+	// Loop through the currently selected categories.
+	foreach ($newCatIds as $newCatId) {
+	    if (!in_array($newCatId, $oldCatIds)) {
+	      // Stores the new selected category in a new ordering row.
+	      $this->orderings()->insert(['id' => $newCatId.'_'.$this->id,
+					  'category_id' => $newCatId,
+					  'song_id' => $this->id,
+					  'title' => $this->title]);
+	    }
+	    else {
+	      // In case the song title has been modified.
+	      $this->orderings()->where('id', $newCatId.'_'.$this->id)->update(['title' => $this->title]);
+
+	      // Removes the ids of the categories which are still selected.
+	      if (($key = array_search($newCatId, $oldCatIds)) !== false) {
+		  unset($oldCatIds[$key]);
+	      }
+	    }
+	}
+
+	// Deletes the unselected categories.
+	foreach ($oldCatIds as $oldCatId) {
+	    $this->orderings()->where('id', $oldCatId.'_'.$this->id)->delete();
+	}
+    }
+
+    public function reorderByCategory()
+    {
+        // Gets the orderings for each category.
+        foreach ($this->categories as $category) {
+	    // N.B: The orderings with null values are placed at the end of the array: (-sort_order DESC).
+	    $orderings = $category->orderings()->orderByRaw('-sort_order DESC')->pluck('sort_order', 'id')->all();
+	    $order = 1;
+
+	    foreach ($orderings as $id => $sortOrder) {
+	        // A new category has been added.
+	        if ($sortOrder === null) {
+		    $category->orderings()->where('id', $id)->update(['sort_order' => $order]);
+		}
+		else {
+		    $order = $sortOrder;
+		}
+
+		$order++;
+	    }
+	}
     }
 
     /**
@@ -190,16 +263,29 @@ class Song extends Model
             'slug' => $this->slug
         ];
 
-        $params['category'] = $this->categories->count() ? $this->categories->first()->slug : null;
+        //$params['category'] = $this->categories->count() ? $this->categories->first()->slug : null;
+        $params['category'] = $this->getPathToSong();
 
         // Expose published year, month and day as URL parameters.
-        if ($this->published) {
+        if ($this->published_up) {
             $params['year']  = $this->published_up->format('Y');
             $params['month'] = $this->published_up->format('m');
             $params['day']   = $this->published_up->format('d');
         }
 
         return $this->url = $controller->pageUrl($pageName, $params);
+    }
+
+    public function getPathToSong()
+    {
+        $path = $this->category->slug;
+	$parents = $this->category->getParent();
+
+	foreach ($parents as $parent) {
+	    $path = $parent->slug.'/'.$path;
+	}
+
+        return $path;
     }
 
     /**
@@ -352,12 +438,12 @@ class Song extends Model
 
         extract(array_merge([
             'direction' => 'next',
-            'attribute' => 'sort_order'
+            'attribute' => 'title'
         ], $options));
 
         $isPrevious = in_array($direction, ['previous', -1]);
-        $directionOrder = $isPrevious ? 'asc' : 'desc';
-        $directionOperator = $isPrevious ? '>' : '<';
+        $directionOrder = $isPrevious ? 'desc' : 'asc';
+        $directionOperator = $isPrevious ? '<' : '>';
 
         $query->where('id', '<>', $this->id);
 
@@ -365,7 +451,9 @@ class Song extends Model
             $query->where($attribute, $directionOperator, $this->$attribute);
 	}
 
-        return $query->orderBy($attribute, $directionOrder);
+        $query->orderBy($attribute, $directionOrder);
+
+        return $query;
     }
 
     /**
@@ -446,7 +534,7 @@ class Song extends Model
          * Sorting
          */
         if (in_array($sort, array_keys(static::$allowedSortingOptions))) {
-            if ($sort == 'random') {
+            if ($sort == 'random' || (substr($sort, 0, 10) === 'sort_order' && $category === null)) {
                 $query->inRandomOrder();
             } else {
                 @list($sortField, $sortDirection) = explode(' ', $sort);
@@ -455,7 +543,15 @@ class Song extends Model
                     $sortDirection = "desc";
                 }
 
-                $query->orderBy($sortField, $sortDirection);
+		if ($sortField == 'sort_order') {
+		    // Joins over the ordering model.
+		    $query->join('codalia_songbook_orderings AS o', function($join) use($category) {
+			$join->on('o.song_id', '=', 'codalia_songbook_songs.id')
+			     ->where('o.category_id', '=', $category);
+		    });
+		}
+
+		$query->orderBy($sortField, $sortDirection);
             }
         }
 

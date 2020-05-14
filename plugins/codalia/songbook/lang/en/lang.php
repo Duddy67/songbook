@@ -80,6 +80,7 @@ return [
       'parent_item_unpublished' => 'Cannot publish this item as its parent item is unpublished.',
       'previous' => 'Previous',
       'next' => 'Next',
+      'cannot_reorder' => 'Cannot reorder items by category as none or more than 1 categories are selected. Please select only 1 category.',
     ],
     'sorting' => [
         'title_asc' => 'Title (ascending)',
@@ -90,6 +91,8 @@ return [
         'updated_desc' => 'Updated (descending)',
         'published_asc' => 'Published (ascending)',
         'published_desc' => 'Published (descending)',
+        'order_asc' => 'Order by category (ascending)',
+        'order_desc' => 'Order by category (descending)',
         'random' => 'Random'
     ],
     'settings' => [
