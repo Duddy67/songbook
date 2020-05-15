@@ -253,18 +253,18 @@ class Song extends Model
      * Sets the "url" attribute with a URL to this object.
      * @param string $pageName
      * @param Controller $controller
+     * @param Object $category          The current category the songs are showed in. (optional)
      *
      * @return string
      */
-    public function setUrl($pageName, $controller)
+    public function setUrl($pageName, $controller, $category = null)
     {
         $params = [
             'id'   => $this->id,
             'slug' => $this->slug
         ];
 
-        //$params['category'] = $this->categories->count() ? $this->categories->first()->slug : null;
-        $params['category'] = $this->getPathToSong();
+        $params['category'] = $this->getPathToSong($category);
 
         // Expose published year, month and day as URL parameters.
         if ($this->published_up) {
@@ -276,10 +276,12 @@ class Song extends Model
         return $this->url = $controller->pageUrl($pageName, $params);
     }
 
-    public function getPathToSong()
+    public function getPathToSong($category = null)
     {
-        $path = $this->category->slug;
-	$parents = $this->category->getParent();
+        $category = ($category === null) ? $this->category : $category;
+
+        $path = $category->slug;
+	$parents = $category->getParent();
 
 	foreach ($parents as $parent) {
 	    $path = $parent->slug.'/'.$path;

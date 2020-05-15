@@ -248,9 +248,9 @@ class Songs extends ComponentBase
          * Add a "url" helper attribute for linking to each song and category
          */
         $songs->each(function($song, $key) {
-	    $song->setUrl($this->songPage, $this->controller);
+	    $song->setUrl($this->songPage, $this->controller, $this->category);
 
-	    $song->categories->each(function($category, $key) use($song) {
+	    $song->categories->each(function($category, $key) {
 		$category->setUrl($this->categoryPage, $this->controller);
 	    });
         });

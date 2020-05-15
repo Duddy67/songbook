@@ -103,16 +103,12 @@ class Song extends ComponentBase
          */
         if ($song && $song->categories->count()) {
             $song->categories->each(function($category, $key) use($song) {
-	        // An extra category matches the main category.
-	        if ($category->id == $song->category_id) {
-		    // Removes this category from the list.
-		    $song->categories->forget($key);
-		}
-		else {
-		    $category->setUrl($this->categoryPage, $this->controller);
-		}
+		$category->setUrl($this->categoryPage, $this->controller);
             });
-        }
+	}
+
+	// Builds the canonical link to the song.
+	$song->canonical = $song->getPathToSong().'/'.$song->slug;
 
         return $song;
     }

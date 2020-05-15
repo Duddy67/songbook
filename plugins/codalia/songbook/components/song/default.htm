@@ -1,5 +1,9 @@
 {% set song = __SELF__.song %}
 
+{% put head %}
+  <link href="{{ url('/') }}/{{ song.canonical }}" rel="canonical">
+{% endput %}
+
 <h3>{{ song.title }}</h3>
 <div class="content">{{ song.lyrics|raw }}</div>
 	<?= e(trans('codalia.songbook::lang.action.new')) ?>
