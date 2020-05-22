@@ -147,7 +147,7 @@ class Category extends Model
     {
         $params = [
             'id'   => $this->id,
-            'slug' => $this->slug
+	    'slug' => $this->slug
         ];
 
         return $this->url = $controller->pageUrl($pageName, $params, false);

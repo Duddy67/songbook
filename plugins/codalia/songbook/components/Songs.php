@@ -82,8 +82,8 @@ class Songs extends ComponentBase
             'categoryFilter' => [
                 'title'       => 'codalia.songbook::lang.settings.songs_filter',
                 'description' => 'codalia.songbook::lang.settings.songs_filter_description',
-                'default'     => '',
                 'type'        => 'string',
+                'default'     => '{{ :slug }}',
             ],
             'songsPerPage' => [
                 'title'             => 'codalia.songbook::lang.settings.songs_per_page',
@@ -181,7 +181,6 @@ class Songs extends ComponentBase
     public function onRun()
     {
         $this->prepareVars();
-
         $this->category = $this->page['category'] = $this->loadCategory();
         $this->songs = $this->page['songs'] = $this->listSongs();
 
