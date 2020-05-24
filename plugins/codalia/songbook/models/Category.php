@@ -147,10 +147,52 @@ class Category extends Model
     {
         $params = [
             'id'   => $this->id,
-	    'slug' => $this->slug
+	    'slug' => $this->slug,
         ];
 
+	$this->path = self::getCategoryPath($this);
+	$segments = count($this->path);
+	// Sets the category page with the appropriate url pattern.
+	$pageName = 'category-'.$segments;
+
+	// The given category has parents.
+	if ($segments > 1) {
+	    // Loops through the category path.
+	    foreach ($this->path as $key => $category) {
+	        $i = $key + 1;
+
+		// Don't treat the last element as it's the given category itself.
+		if ($i == $segments) {
+		    break;
+		}
+
+		// Sets the parents of the given category.
+	        $params['parent-'.$i] = $category['slug']; 
+	    }
+	}
+
         return $this->url = $controller->pageUrl($pageName, $params, false);
+    }
+
+    /**
+     * Returns the category path to a given category.
+     *
+     * @param object $category
+     *
+     * @return array
+     */
+    public static function getCategoryPath($category)
+    {
+        $path = [$category->attributes];
+	$parent = $category->getParent()->first();
+
+	// Goes up to the root parent.
+	while ($parent) {
+	    $path[] = $parent->attributes;
+	    $parent = $parent->getParent()->first();
+	}
+
+        return array_reverse($path);
     }
 
     protected static function listSubCategoryOptions()

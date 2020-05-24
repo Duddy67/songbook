@@ -183,6 +183,7 @@ class Songs extends ComponentBase
         $this->prepareVars();
         $this->category = $this->page['category'] = $this->loadCategory();
         $this->songs = $this->page['songs'] = $this->listSongs();
+	$this->addCss(url('plugins/codalia/songbook/assets/css/breadcrumb.css'));
 
         /*
          * If the page number is not valid, redirect

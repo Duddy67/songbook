@@ -10,6 +10,7 @@ use Backend\Models\User;
 use October\Rain\Support\Str;
 use October\Rain\Database\Traits\Validation;
 use Carbon\Carbon;
+use Codalia\SongBook\Models\Category as SongCategory;
 use Codalia\SongBook\Models\Settings;
 use Codalia\SongBook\Components\Songs;
 
@@ -261,10 +262,20 @@ class Song extends Model
     {
         $params = [
             'id'   => $this->id,
-            'slug' => $this->slug
+            'slug' => $this->slug,
+            'category' => ''
         ];
 
-        $params['category'] = $this->getPathToSong($category);
+	// If no (current) category is given, the main category of the song is set.
+        $category = ($category === null) ? $this->category : $category;
+	// Sets the category path to the song.
+	$path = SongCategory::getCategoryPath($category);
+
+	foreach ($path as $key => $category) {
+	    $params['category'] .= $category['slug'].'/';
+	}
+
+	$params['category'] = substr($params['category'], 0, -1);
 
         // Expose published year, month and day as URL parameters.
         if ($this->published_up) {
@@ -274,20 +285,6 @@ class Song extends Model
         }
 
         return $this->url = $controller->pageUrl($pageName, $params);
-    }
-
-    public function getPathToSong($category = null)
-    {
-        $category = ($category === null) ? $this->category : $category;
-
-        $path = $category->slug;
-	$parents = $category->getParent();
-
-	foreach ($parents as $parent) {
-	    $path = $parent->slug.'/'.$path;
-	}
-
-        return $path;
     }
 
     /**

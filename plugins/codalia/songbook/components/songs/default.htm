@@ -1,4 +1,7 @@
 {% set songs = __SELF__.songs %}
+{% set category = __SELF__.category %}
+
+{% partial __SELF__ ~ "::breadcrumb" %}
 
 <ul class="song-list">
     {% for song in songs %}

@@ -3,6 +3,7 @@
 use Cms\Classes\Page;
 use Cms\Classes\ComponentBase;
 use Codalia\SongBook\Models\Song as SongItem;
+use Codalia\SongBook\Models\Category;
 
 
 class Song extends ComponentBase
@@ -108,7 +109,14 @@ class Song extends ComponentBase
 	}
 
 	// Builds the canonical link to the song.
-	$song->canonical = $song->getPathToSong().'/'.$song->slug;
+	$song->path = Category::getCategoryPath($song->category);
+	$canonical = '';
+
+	foreach ($song->path as $key => $category) {
+	    $canonical .= $category['slug'].'/';
+	}
+
+	$song->canonical = $canonical.$song->slug;
 
         return $song;
     }
