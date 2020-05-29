@@ -66,17 +66,10 @@ class Categories extends ComponentBase
 
     public function onRun()
     {
-      $this->currentCategorySlug = $this->page['currentCategorySlug'] = $this->property('slug');
-      $this->categoryPage = $this->page['categoryPage'] = $this->property('categoryPage');
-      $this->categories = $this->page['categories'] = $this->loadCategories();
+	$this->currentCategorySlug = $this->page['currentCategorySlug'] = $this->property('slug');
+	$this->categoryPage = $this->page['categoryPage'] = $this->property('categoryPage');
+	$this->categories = $this->page['categories'] = $this->loadCategories();
     }
-
-
-    /*public function loadCategories()
-    {
-      return SongCategory::all();
-    }*/
-
 
     /**
      * Load all published categories or, depending on the <displayEmpty> option, only those that have songs

@@ -184,7 +184,6 @@ class Songs extends ComponentBase
         $this->category = $this->page['category'] = $this->loadCategory();
         $this->songs = $this->page['songs'] = $this->listSongs();
 	$this->addCss(url('plugins/codalia/songbook/assets/css/breadcrumb.css'));
-
         /*
          * If the page number is not valid, redirect
          */
@@ -212,6 +211,11 @@ class Songs extends ComponentBase
     protected function listSongs()
     {
         $category = $this->category ? $this->category->id : null;
+
+	// Removes the colon before the page number.
+	if ($this->property('pageNumber') && preg_match('#^:([0-9]+)$#', $this->property('pageNumber'), $matches) === 1) {
+	    $this->setProperty('pageNumber', $matches[1]);
+	}
 
         /*
          * List all the songs, eager load their categories

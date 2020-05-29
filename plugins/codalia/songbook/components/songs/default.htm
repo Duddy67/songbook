@@ -26,17 +26,17 @@
 {% if songs.lastPage > 1 %}
     <ul class="pagination">
         {% if songs.currentPage > 1 %}
-            <li><a href="{{ this.page.baseFileName|page({ (__SELF__.pageParam): (songs.currentPage-1) }) }}">&larr; Prev</a></li>
+            <li><a href="{{ this.page.baseFileName|page({ (__SELF__.pageParam): ':' ~ (songs.currentPage-1) }) }}">&larr; Prev</a></li>
         {% endif %}
 
         {% for page in 1..songs.lastPage %}
             <li class="{{ songs.currentPage == page ? 'active' : null }}">
-                <a href="{{ this.page.baseFileName|page({ (__SELF__.pageParam): page }) }}">{{ page }}</a>
+	      <a href="{{ this.page.baseFileName|page( {(__SELF__.pageParam): ':' ~ page }) }}">{{ page }}</a>
             </li>
         {% endfor %}
 
         {% if songs.lastPage > songs.currentPage %}
-            <li><a href="{{ this.page.baseFileName|page({ (__SELF__.pageParam): (songs.currentPage+1) }) }}">Next &rarr;</a></li>
+            <li><a href="{{ this.page.baseFileName|page({ (__SELF__.pageParam): ':' ~ (songs.currentPage+1) }) }}">Next &rarr;</a></li>
         {% endif %}
     </ul>
 {% endif %}
