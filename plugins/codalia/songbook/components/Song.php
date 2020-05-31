@@ -40,7 +40,7 @@ class Song extends ComponentBase
                 'title'       => 'codalia.songbook::lang.settings.song_category',
                 'description' => 'codalia.songbook::lang.settings.song_category_description',
                 'type'        => 'dropdown',
-                'default'     => 'songbook/category',
+                'default'     => '',
             ],
         ];
     }

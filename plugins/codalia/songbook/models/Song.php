@@ -585,14 +585,11 @@ class Song extends Model
         }
 
         /*
-         * Category, including children
+         * Gets songs which are in the current category.
          */
         if ($category !== null) {
-            $category = Category::find($category);
-
-            $categories = $category->getAllChildrenAndSelf()->lists('id');
-            $query->whereHas('categories', function($q) use ($categories) {
-                $q->whereIn('id', $categories);
+            $query->whereHas('categories', function($q) use ($category) {
+                $q->where('id', $category);
             });
         }
 
