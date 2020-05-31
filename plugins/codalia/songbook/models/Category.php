@@ -97,23 +97,29 @@ class Category extends Model
 
     public function beforeSave()
     {
-      // Gets the parent category if any.
-      $parent = Category::find($this->getParentId());
-      // Do not publish this category if its parent is unpublished.
-      if ($parent && $parent->getAttributeValue('status') == 'unpublished' && $this->status == 'published') {
-	throw new \ApplicationException(Lang::get('codalia.songbook::lang.action.parent_item_unpublished'));
-      }
+	// Gets the parent category if any.
+	$parent = Category::find($this->getParentId());
+	// Do not publish this category if its parent is unpublished.
+	if ($parent && $parent->getAttributeValue('status') == 'unpublished' && $this->status == 'published') {
+	    throw new \ApplicationException(Lang::get('codalia.songbook::lang.action.parent_item_unpublished'));
+	}
     }
 
     public function afterSave()
     {
-      if ($this->status == 'unpublished') {
-	// All of the children items have to be unpublished as well.
-	foreach ($this->getAllChildren() as $children) {
-	  $children->status = 'unpublished';
-	  $children->save();
+	if ($this->status == 'unpublished') {
+	    // All of the children items have to be unpublished as well.
+	    foreach ($this->getAllChildren() as $children) {
+		$children->status = 'unpublished';
+		$children->save();
+	    }
 	}
-      }
+
+	self::setCategoryPath($this);
+
+	foreach ($this->getAllChildren() as $children) {
+	    self::setCategoryPath($children);
+	}
     }
 
     /**
@@ -122,7 +128,6 @@ class Category extends Model
      */
     public function getNestedSongCount()
     {
-      //echo 'TEST'.$this->name.' '.$this->songs_count()->count();
         return $this->songs_count()->count() + $this->children->sum(function ($category) {
             return $category->getNestedSongCount();
         });
@@ -131,8 +136,8 @@ class Category extends Model
 
     public function getStatusOptions()
     {
-      return array('unpublished' => 'codalia.songbook::lang.status.unpublished',
-		   'published' => 'codalia.songbook::lang.status.published');
+	return array('unpublished' => 'codalia.songbook::lang.status.unpublished',
+		     'published' => 'codalia.songbook::lang.status.published');
     }
 
     /**
@@ -193,6 +198,29 @@ class Category extends Model
 	}
 
         return array_reverse($path);
+    }
+
+    /**
+     * Builds and sets the path attribute for a given category.
+     *
+     * @param object $category
+     *
+     * @return void
+     */
+    public static function setCategoryPath($category)
+    {
+	$categoryPath = self::getCategoryPath($category);
+	$path = '';
+
+	// Builds the path.
+	foreach ($categoryPath as $segment) {
+	    $path .= $segment['slug'].'/';
+	}
+
+	$path = substr($path, 0, -1);
+
+	// Sets the path.
+	\Db::table('codalia_songbook_categories')->where('id', $category->id)->update(['path' => $path]);
     }
 
     protected static function listSubCategoryOptions()

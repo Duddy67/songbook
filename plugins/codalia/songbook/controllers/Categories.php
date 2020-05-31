@@ -78,4 +78,12 @@ class Categories extends Controller
 
       return $this->listRefresh();
     }
+
+    public function onReorder()
+    {
+	parent::onReorder();
+
+	$category = Category::find(post('sourceNode'));
+	Category::setCategoryPath($category);
+    }
 }
