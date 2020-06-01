@@ -1,8 +1,13 @@
 {% set song = __SELF__.song %}
 
+
 {% put head %}
   <link href="{{ url('/') }}/{{ song.canonical }}" rel="canonical">
 {% endput %}
+
+{% if song.breadcrumb is not null %}
+  {% partial "@breadcrumb" path = song.breadcrumb prefix = song.prefix %}
+{% endif %}
 
 <h3>{{ song.title }}</h3>
 <div class="content">{{ song.lyrics|raw }}</div>

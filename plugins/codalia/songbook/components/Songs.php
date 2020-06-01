@@ -6,7 +6,8 @@ use Cms\Classes\Page;
 use Cms\Classes\ComponentBase;
 use Codalia\SongBook\Models\Song;
 use Codalia\SongBook\Models\Category as SongCategory;
-use Codalia\SongBook\Models\Settings as SongSettings;
+use Codalia\SongBook\Models\Settings;
+use Cms\Classes\Theme;
 use Auth;
 
 
@@ -249,6 +250,8 @@ class Songs extends ComponentBase
                 : preg_split('/,\s*/', $this->property('exceptCategories'), -1, PREG_SPLIT_NO_EMPTY),
         ]);
 
+	$path = null;
+
         /*
          * Add a "url" helper attribute for linking to each song and category
          */
@@ -257,10 +260,47 @@ class Songs extends ComponentBase
 
 	    $song->categories->each(function($category, $key) {
 		$category->setUrl($this->categoryPage, $this->controller);
+
+		// Retrieves the path to the current category.
+		if (isset($this->category) && $category->id == $this->category->id) {
+		    $path = $category->path;
+		}
 	    });
         });
 
+	if (isset($this->category) && Settings::get('show_breadcrumb')) {
+	    $this->category->breadcrumb = ($path) ? $path : SongCategory::getCategoryPath($this->category);
+	    $this->category->prefix = self::getCategoryPrefix();
+	}
+
         return $songs;
+    }
+
+    /**
+     * Returns the category prefix parsed from the page file names.
+     *
+     * @return mixed  The category prefix (string) or null otherwise.
+     */
+    public static function getCategoryPrefix()
+    {
+        $theme = Theme::getActiveTheme();
+	$pages = $theme->listPages();
+
+	foreach ($pages as $page) {
+	    if (!$page->url) {
+		continue;
+	    }
+
+	    // N.B: Category page names must start with "category-".
+	    if (preg_match('#^category-[0-9]+\.htm$#', $page->getFileName())) {
+	        // Extracts the very first segment of the page url.
+	        preg_match('#^\/([a-z0-9_-]+)\/#', $page->url, $matches);
+
+		return $matches[1];
+	    }
+	}
+
+	return null;
     }
 
     protected function loadCategory()
@@ -285,6 +325,6 @@ class Songs extends ComponentBase
     {
         $backendUser = BackendAuth::getUser();
 
-        return $backendUser && $backendUser->hasAccess('rainlab.blog.access_posts') && SongSettings::get('show_all_posts', true);
+        return $backendUser && $backendUser->hasAccess('rainlab.blog.access_posts') && Settings::get('show_all_posts', true);
     }
 }

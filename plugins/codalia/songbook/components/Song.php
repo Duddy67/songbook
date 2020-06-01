@@ -4,6 +4,8 @@ use Cms\Classes\Page;
 use Cms\Classes\ComponentBase;
 use Codalia\SongBook\Models\Song as SongItem;
 use Codalia\SongBook\Models\Category;
+use Codalia\SongBook\Models\Settings;
+use Codalia\SongBook\Components\Songs;
 
 
 class Song extends ComponentBase
@@ -55,6 +57,7 @@ class Song extends ComponentBase
     {
         $this->categoryPage = $this->page['categoryPage'] = $this->property('categoryPage');
         $this->song = $this->page['song'] = $this->loadSong();
+	$this->addCss(url('plugins/codalia/songbook/assets/css/breadcrumb.css'));
 
 	if (!$this->song->canView()) {
 	    return \Redirect::to(403);
@@ -118,7 +121,40 @@ class Song extends ComponentBase
 
 	$song->canonical = $canonical.$song->slug;
 
+	if (Settings::get('show_breadcrumb')) {
+	    $song->breadcrumb = $this->getBreadcrumb($song);
+	    $song->prefix = Songs::getCategoryPrefix();
+	}
+
         return $song;
+    }
+
+    /**
+     * Returns the path to a given song.
+     *
+     * @param object $song
+     *
+     * @return array
+     */
+    public function getBreadcrumb($song)
+    {
+        // Removes the root part from the current url as well as the song slug 
+        // in order to extract the category path.
+        $songPath = preg_replace('#^'.url('/').'/#', '', $this->currentPageUrl());
+        $categoryPath = preg_replace('#/'.$song->slug.'$#', '', $songPath);
+	// Gets the category the song is in.
+	$category = Category::where('path', $categoryPath)->first();
+	$breadcrumb = [];
+
+	// Builds the breadcrumb.
+	if($category) {
+	    $breadcrumb = Category::getCategoryPath($category);
+	    $attributes = $song->attributes;
+	    $attributes['name'] = $song->title;
+	    $breadcrumb[] = $attributes;
+	}
+
+	return $breadcrumb;
     }
 
     public function previousSong()

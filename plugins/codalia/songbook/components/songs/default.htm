@@ -1,8 +1,9 @@
 {% set songs = __SELF__.songs %}
 {% set category = __SELF__.category %}
-{% set path = category.path %}
 
-{% partial __SELF__ ~ "::breadcrumb" path = path prefix = category.prefix %}
+{% if category.breadcrumb is not null %}
+  {% partial "@breadcrumb" path = category.breadcrumb prefix = category.prefix %}
+{% endif %}
 
 
 <ul class="song-list">

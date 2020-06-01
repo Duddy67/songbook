@@ -140,6 +140,8 @@ return [
       'tab_general' => 'General',
       'max_characters' => 'Max characters',
       'max_characters_comment' => 'Max characters',
+      'show_breadcrumb_label' => 'Show breadcrumb',
+      'show_breadcrumb_comment' => 'Show a breadcrumb in song and category views.',
     ],
     'messages' => [
       'required_field' => 'This field is required'
