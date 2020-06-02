@@ -58,8 +58,6 @@ class Songs extends Controller
 	if (!$this->user->hasAnyAccess(['codalia.songbook.access_other_songs'])) {
 	    $query->where('created_by', $this->user->id);
 	}
-	
-	//dd($query->toSql());
     }
 
     public function formExtendQuery($query)
@@ -102,7 +100,6 @@ class Songs extends Controller
 	foreach ($checkedIds as $songId) {
 	  $song = Song::find($songId);
 	  $song->status = $status;
-	  //$song->published_up = ($song->status == 'published' && is_null($song->published_up)) ? Carbon::now() : $song->published_up;
 	  $song->published_up = Song::setPublishingDate($song);
 	  $song->save();
 	}

@@ -14,5 +14,6 @@ class Settings extends Model
 
     public $rules = [
         'show_all_songs' => ['boolean'],
+        'show_breadcrumb' => ['boolean'],
     ];
 }

@@ -5,11 +5,16 @@
         <ul>
 	    <li><a href="{{ url('/') }}">Home</a></li>
 	    {% for item in path %}
+	        {% set name = item.name %}
+		{% if name is null %}
+		    {% set name = item.title %}
+		{% endif %}
+
 		{% if loop.last %}
-		    <li>{{ item.name }}</li>
+		    <li>{{ name }}</li>
 		{% else %}
 		    {% set url = url ~ '/' ~ item.slug %}
-		    <li><a href="{{ url }}">{{ item.name }}</a></li>
+		    <li><a href="{{ url }}">{{ name }}</a></li>
 		{% endif %}
 	    {% endfor %}
         </ul>

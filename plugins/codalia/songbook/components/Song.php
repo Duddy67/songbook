@@ -130,7 +130,7 @@ class Song extends ComponentBase
     }
 
     /**
-     * Returns the path to a given song.
+     * Returns the breadcrumb path to a given song.
      *
      * @param object $song
      *
@@ -149,9 +149,8 @@ class Song extends ComponentBase
 	// Builds the breadcrumb.
 	if($category) {
 	    $breadcrumb = Category::getCategoryPath($category);
-	    $attributes = $song->attributes;
-	    $attributes['name'] = $song->title;
-	    $breadcrumb[] = $attributes;
+	    // The last segment of the path is the song itself.
+	    $breadcrumb[] = $song->attributes;
 	}
 
 	return $breadcrumb;

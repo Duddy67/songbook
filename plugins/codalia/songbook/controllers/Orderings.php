@@ -33,11 +33,13 @@ class Orderings extends Controller
         $this->asExtension('ReorderController')->reorder();
     }
 
-    public function getCurrentFilters($name = null) {
+    public function getCurrentFilters($name) {
+        // Loops through the session array.
         foreach (\Session::get('widget', []) as $key => $item) {
             if (str_contains($key, 'Filter')) {
                 $filters = @unserialize(@base64_decode($item));
                 if ($filters) {
+		    // Checks for the given filter name.
 		    if (array_key_exists('scope-'.$name, $filters)) {
 		        $filter = (isset($filters['scope-'.$name])) ? $filters['scope-'.$name] : [];
 		        return $filter;

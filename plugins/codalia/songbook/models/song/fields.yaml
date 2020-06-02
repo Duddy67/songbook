@@ -29,11 +29,13 @@ secondaryTabs:
         category:
             tab: codalia.songbook::lang.song.tab_categories
             label: codalia.songbook::lang.attribute.main_category
+            span: left
             type: relation
             required: true
 
         categories:
             tab: codalia.songbook::lang.song.tab_categories
+            span: left
             type: relation
             commentAbove: codalia.songbook::lang.song.categories_comment
             placeholder: codalia.songbook::lang.song.categories_placeholder
@@ -41,6 +43,7 @@ secondaryTabs:
         status:
             tab: codalia.songbook::lang.attribute.tab_manage
             label: codalia.songbook::lang.attribute.status
+            span: left
             type: dropdown
             permissions: codalia.songbook.access_publish
 
@@ -48,13 +51,22 @@ secondaryTabs:
         _status_field:
             tab: codalia.songbook::lang.attribute.tab_manage
             label: codalia.songbook::lang.attribute.status
+            span: left
             disabled: true
+
+        usergroup:
+            tab: codalia.songbook::lang.attribute.tab_manage
+            label: codalia.songbook::lang.attribute.viewing_access
+            span: right
+            type: relation
+            emptyOption: Public
 
         published_up:
             tab: codalia.songbook::lang.attribute.tab_manage
             label: codalia.songbook::lang.attribute.published_up
             type: datepicker
             mode: datetime
+            span: left
             permissions: codalia.songbook.access_publish
             trigger:
                 action: enable
@@ -66,6 +78,7 @@ secondaryTabs:
             label: codalia.songbook::lang.attribute.published_down
             type: datepicker
             mode: datetime
+            span: right
             permissions: codalia.songbook.access_publish
             trigger:
                 action: enable
@@ -75,6 +88,16 @@ secondaryTabs:
         created_at:
             tab: codalia.songbook::lang.attribute.tab_manage
             label: codalia.songbook::lang.attribute.created_at
+            span: left
+            type: datepicker
+            mode: datetime
+            context: [update]
+            disabled: true
+
+        updated_at:
+            tab: codalia.songbook::lang.attribute.tab_manage
+            label: codalia.songbook::lang.attribute.updated_at
+            span: right
             type: datepicker
             mode: datetime
             context: [update]
@@ -83,6 +106,7 @@ secondaryTabs:
         user:
             tab: codalia.songbook::lang.attribute.tab_manage
             label: codalia.songbook::lang.attribute.created_by
+            span: left
             type: relation
             select: concat(first_name, ' ', last_name)
             permissions: codalia.songbook.access_other_songs
@@ -91,14 +115,7 @@ secondaryTabs:
         _created_by_field:
             tab: codalia.songbook::lang.attribute.tab_manage
             label: codalia.songbook::lang.attribute.created_by
-            context: [update]
-            disabled: true
-
-        updated_at:
-            tab: codalia.songbook::lang.attribute.tab_manage
-            label: codalia.songbook::lang.attribute.updated_at
-            type: datepicker
-            mode: datetime
+            span: left
             context: [update]
             disabled: true
 
@@ -106,18 +123,14 @@ secondaryTabs:
         _updated_by_field:
             tab: codalia.songbook::lang.attribute.tab_manage
             label: codalia.songbook::lang.attribute.updated_by
+            span: right
             context: [update]
             disabled: true
-
-        usergroup:
-            tab: codalia.songbook::lang.attribute.tab_manage
-            label: codalia.songbook::lang.attribute.viewing_access
-            type: relation
-            emptyOption: Public
 
         id:
             tab: codalia.songbook::lang.attribute.tab_manage
             label: ID
+            span: left
             context: [update]
             disabled: true
 

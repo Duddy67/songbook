@@ -41,39 +41,40 @@ class Categories extends Controller
 
     public function index_onSetStatus()
     {
-      // Needed for the status column partial.
-      $this->vars['statusIcons'] = $this->statusIcons;
+	// Needed for the status column partial.
+	$this->vars['statusIcons'] = $this->statusIcons;
 
-      // Ensures one or more items are selected.
-      if (($checkedIds = post('checked')) && is_array($checkedIds) && count($checkedIds)) {
-	$status = post('status');
-	foreach ($checkedIds as $catId) {
-	  $category = Category::find($catId);
+	// Ensures one or more items are selected.
+	if (($checkedIds = post('checked')) && is_array($checkedIds) && count($checkedIds)) {
+	    $status = post('status');
 
-	  if ($status == 'unpublished') {
-	    // All of the children items have to be unpublished as well.
-	    foreach ($category->getAllChildren() as $children) {
-	      $children->status = $status;
-	      $children->save();
-	    }
+	    foreach ($checkedIds as $catId) {
+	      $category = Category::find($catId);
+
+	      if ($status == 'unpublished') {
+		  // All of the children items have to be unpublished as well.
+		  foreach ($category->getAllChildren() as $children) {
+		      $children->status = $status;
+		      $children->save();
+		  }
+	      }
+	      // published
+	      else {
+		  // Gets the parent item if any.
+		  $parent = Category::find($category->getParentId());
+		  // Do not publish the item if the parent item is unpublished.
+		  if ($parent && $parent->getAttributeValue('status') == 'unpublished') {
+		      Flash::warning(Lang::get('codalia.songbook::lang.action.parent_item_unpublished'));
+		      return false;
+		  }
+	      }
+
+	      // Assigns the new status value to the selected item.
+	      $category->status = $status;
+	      $category->save();
 	  }
-	  // published
-	  else {
-	    // Gets the parent item if any.
-	    $parent = Category::find($category->getParentId());
-	    // Do not publish the item if the parent item is unpublished.
-	    if ($parent && $parent->getAttributeValue('status') == 'unpublished') {
-	      Flash::warning(Lang::get('codalia.songbook::lang.action.parent_item_unpublished'));
-	      return false;
-	    }
-	  }
 
-	  // Assigns the new status value to the selected item.
-	  $category->status = $status;
-	  $category->save();
-	}
-
-	Flash::success(Lang::get('codalia.songbook::lang.action.'.rtrim($status, 'ed').'_success'));
+	  Flash::success(Lang::get('codalia.songbook::lang.action.'.rtrim($status, 'ed').'_success'));
       }
 
       return $this->listRefresh();
@@ -83,6 +84,7 @@ class Categories extends Controller
     {
 	parent::onReorder();
 
+	// Refreshes the category path.
 	$category = Category::find(post('sourceNode'));
 	Category::setCategoryPath($category);
     }

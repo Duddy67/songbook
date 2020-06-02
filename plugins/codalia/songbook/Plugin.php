@@ -49,21 +49,21 @@ class Plugin extends PluginBase
      */
     public function boot()
     {
-      BackendUserModel::extend(function ($model) {
-        $model->hasMany['songs'] = ['Codalia\SongBook\Models\Song', 'key' => 'created_by'];
-      });
-
-      // Ensures first that the RainLab User plugin is installed and activated.
-      if (PluginManager::instance()->exists('RainLab.User')) {
-	UserGroup::extend(function ($model) {
-	    $model->hasMany['songs'] = ['Codalia\SongBook\Models\Song', 'key' => 'access_id'];
+	BackendUserModel::extend(function ($model) {
+	    $model->hasMany['songs'] = ['Codalia\SongBook\Models\Song', 'key' => 'created_by'];
 	});
-      }
 
-      // Extends the partial files used for the relation type fields.
-      Relation::extend(function ($widget) {
-	  $widget->addViewPath(['$/codalia/songbook/models/song']);
-      });
+	// Ensures first that the RainLab User plugin is installed and activated.
+	if (PluginManager::instance()->exists('RainLab.User')) {
+	    UserGroup::extend(function ($model) {
+		$model->hasMany['songs'] = ['Codalia\SongBook\Models\Song', 'key' => 'access_id'];
+	    });
+	}
+
+	// Extends the partial files used for the relation type fields.
+	Relation::extend(function ($widget) {
+	    $widget->addViewPath(['$/codalia/songbook/models/song']);
+	});
     }
 
     /**

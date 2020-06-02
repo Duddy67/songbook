@@ -147,27 +147,27 @@ class Song extends Model
     }
 
     public function getUpdatedByFieldAttribute() {
-      $names = '';
+	$names = '';
 
-      if($this->updated_by) {
-	$user = BackendAuth::findUserById($this->updated_by);
-	$names = $user->first_name.' '.$user->last_name;
-      }
+	if($this->updated_by) {
+	    $user = BackendAuth::findUserById($this->updated_by);
+	    $names = $user->first_name.' '.$user->last_name;
+	}
 
-      return $names;
+	return $names;
     }
 
     public function getStatusFieldAttribute() {
-      $statuses = $this->getStatusOptions();
-      $status = (isset($this->status)) ? $this->status : 'unpublished';
+	$statuses = $this->getStatusOptions();
+	$status = (isset($this->status)) ? $this->status : 'unpublished';
 
-      return Lang::get($statuses[$status]);
+	return Lang::get($statuses[$status]);
     }
 
     public function beforeCreate()
     {
 	if(empty($this->slug)) {
-	  $this->slug = Str::slug($this->title);
+	    $this->slug = Str::slug($this->title);
 	}
 
 	$this->published_up = self::setPublishingDate($this);
@@ -205,20 +205,20 @@ class Song extends Model
 	// Loop through the currently selected categories.
 	foreach ($newCatIds as $newCatId) {
 	    if (!in_array($newCatId, $oldCatIds)) {
-	      // Stores the new selected category in a new ordering row.
-	      $this->orderings()->insert(['id' => $newCatId.'_'.$this->id,
-					  'category_id' => $newCatId,
-					  'song_id' => $this->id,
-					  'title' => $this->title]);
+		// Stores the new selected category in a new ordering row.
+		$this->orderings()->insert(['id' => $newCatId.'_'.$this->id,
+					    'category_id' => $newCatId,
+					    'song_id' => $this->id,
+					    'title' => $this->title]);
 	    }
 	    else {
-	      // In case the song title has been modified.
-	      $this->orderings()->where('id', $newCatId.'_'.$this->id)->update(['title' => $this->title]);
+		// In case the song title has been modified.
+		$this->orderings()->where('id', $newCatId.'_'.$this->id)->update(['title' => $this->title]);
 
-	      // Removes the ids of the categories which are still selected.
-	      if (($key = array_search($newCatId, $oldCatIds)) !== false) {
-		  unset($oldCatIds[$key]);
-	      }
+		// Removes the ids of the categories which are still selected.
+		if (($key = array_search($newCatId, $oldCatIds)) !== false) {
+		    unset($oldCatIds[$key]);
+		}
 	    }
 	}
 
@@ -380,12 +380,12 @@ class Song extends Model
 
     public function scopeSongCount($query)
     {
-      // Ensures the song is published and access matches the groups of the current user.
-      return $query->where('status', 'published')
-	           ->where(function($query) { 
-			$query->whereIn('access_id', Songs::getUserGroupIds()) 
-			      ->orWhereNull('access_id');
-		    });
+	// Ensures the song is published and access matches the groups of the current user.
+	return $query->where('status', 'published')
+		     ->where(function($query) { 
+			  $query->whereIn('access_id', Songs::getUserGroupIds()) 
+				->orWhereNull('access_id');
+		      });
     }
 
     /**

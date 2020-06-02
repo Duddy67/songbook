@@ -51,7 +51,7 @@ class Categories extends ComponentBase
                 'title'       => 'codalia.songbook::lang.settings.category_page',
                 'description' => 'codalia.songbook::lang.settings.category_page_description',
                 'type'        => 'dropdown',
-                'default'     => 'songbook/category',
+                'default'     => '',
                 'group'       => 'codalia.songbook::lang.settings.group_links',
             ],
       ];
