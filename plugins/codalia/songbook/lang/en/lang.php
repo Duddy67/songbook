@@ -134,7 +134,11 @@ return [
       'songs_except_categories' => 'Except categories',
       'songs_except_categories_description' => 'Enter a comma-separated list of category slugs or variable with such a list of categories you want to exclude',
       'songs_except_categories_validation' => 'Category exceptions must be a single category slug, or a comma-separated list of slugs',
-      'group_exceptions' => 'Exceptions'
+      'group_exceptions' => 'Exceptions',
+      'featured_title' => 'Featured',
+      'featured_description' => 'Displays songs of a specific category in the home page.',
+      'featured_id' => 'Category ID',
+      'featured_id_description' => 'Enter the slug or the numeric id of a category to get the songs from. Add a "id:" prefix for numeric ids (eg: id:25).',
     ],
     'global_settings' => [
       'tab_general' => 'General',

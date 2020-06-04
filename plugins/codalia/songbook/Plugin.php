@@ -77,6 +77,7 @@ class Plugin extends PluginBase
             'Codalia\SongBook\Components\Song' => 'song',
             'Codalia\SongBook\Components\Songs' => 'songList',
             'Codalia\SongBook\Components\Categories' => 'songCategories',
+            'Codalia\SongBook\Components\Featured' => 'featuredSongs',
         ];
     }
 

@@ -1,4 +1,4 @@
-<?php namespace Codalia\SongBook\Components;
+<?php namespace Codalia\Songbook\Components;
 
 use Lang;
 use BackendAuth;
@@ -7,11 +7,9 @@ use Cms\Classes\ComponentBase;
 use Codalia\SongBook\Models\Song;
 use Codalia\SongBook\Models\Category as SongCategory;
 use Codalia\SongBook\Models\Settings;
-use Cms\Classes\Theme;
 use Auth;
 
-
-class Songs extends ComponentBase
+class Featured extends ComponentBase
 {
     /**
      * A collection of songs to display
@@ -66,8 +64,8 @@ class Songs extends ComponentBase
     public function componentDetails()
     {
         return [
-            'name'        => 'codalia.songbook::lang.settings.songs_title',
-            'description' => 'codalia.songbook::lang.settings.songs_description'
+            'name'        => 'codalia.songbook::lang.settings.featured_title',
+            'description' => 'codalia.songbook::lang.settings.featured_description'
         ];
     }
 
@@ -78,13 +76,13 @@ class Songs extends ComponentBase
                 'title'       => 'codalia.songbook::lang.settings.songs_pagination',
                 'description' => 'codalia.songbook::lang.settings.songs_pagination_description',
                 'type'        => 'string',
-                'default'     => '{{ :page }}'
+                'default'     => '{{ :page? }}'
             ],
-            'categoryFilter' => [
-                'title'       => 'codalia.songbook::lang.settings.songs_filter',
-                'description' => 'codalia.songbook::lang.settings.songs_filter_description',
+            'categoryId' => [
+                'title'       => 'codalia.songbook::lang.settings.featured_id',
+                'description' => 'codalia.songbook::lang.settings.featured_id_description',
                 'type'        => 'string',
-                'default'     => '{{ :slug }}',
+                'showExternalParam' => false
             ],
             'songsPerPage' => [
                 'title'             => 'codalia.songbook::lang.settings.songs_per_page',
@@ -125,14 +123,6 @@ class Songs extends ComponentBase
                 'type'              => 'string',
                 'validationPattern' => '^[a-z0-9\-_,\s]+$',
                 'validationMessage' => 'codalia.songbook::lang.settings.songs_except_song_validation',
-                'group'             => 'codalia.songbook::lang.settings.group_exceptions'
-            ],
-            'exceptCategories' => [
-                'title'             => 'codalia.songbook::lang.settings.songs_except_categories',
-                'description'       => 'codalia.songbook::lang.settings.songs_except_categories_description',
-                'type'              => 'string',
-                'validationPattern' => '^[a-z0-9\-_,\s]+$',
-                'validationMessage' => 'codalia.songbook::lang.settings.songs_except_categories_validation',
                 'group'             => 'codalia.songbook::lang.settings.group_exceptions'
             ]
         ];
@@ -179,7 +169,6 @@ class Songs extends ComponentBase
         $this->prepareVars();
         $this->category = $this->page['category'] = $this->loadCategory();
         $this->songs = $this->page['songs'] = $this->listSongs();
-	$this->addCss(url('plugins/codalia/songbook/assets/css/breadcrumb.css'));
 
         /*
          * If the page number is not valid, redirect
@@ -245,8 +234,6 @@ class Songs extends ComponentBase
                 : preg_split('/,\s*/', $this->property('exceptCategories'), -1, PREG_SPLIT_NO_EMPTY),
         ]);
 
-	$path = null;
-
         /*
          * Add a "url" helper attribute for linking to each song and category
          */
@@ -255,54 +242,25 @@ class Songs extends ComponentBase
 
 	    $song->categories->each(function($category, $key) {
 		$category->setUrl($this->categoryPage, $this->controller);
-
-		// Retrieves the path to the current category.
-		if (isset($this->category) && $category->id == $this->category->id) {
-		    $path = $category->path;
-		}
 	    });
         });
-
-	if (isset($this->category) && Settings::get('show_breadcrumb')) {
-	    $this->category->breadcrumb = ($path) ? $path : SongCategory::getCategoryPath($this->category);
-	    $this->category->prefix = self::getCategoryPrefix();
-	}
 
         return $songs;
     }
 
-    /**
-     * Returns the category prefix parsed from the page file names.
-     *
-     * @return mixed  The category prefix (string) or null otherwise.
-     */
-    public static function getCategoryPrefix()
-    {
-        $theme = Theme::getActiveTheme();
-	$pages = $theme->listPages();
-
-	foreach ($pages as $page) {
-	    if (!$page->url) {
-		continue;
-	    }
-
-	    // N.B: Category page names must start with "category-".
-	    if (preg_match('#^category-[0-9]+\.htm$#', $page->getFileName())) {
-	        // Extracts the very first segment of the page url.
-	        preg_match('#^\/([a-z0-9_-]+)\/#', $page->url, $matches);
-
-		return $matches[1];
-	    }
-	}
-
-	return null;
-    }
-
     protected function loadCategory()
     {
-        if (!$slug = $this->property('categoryFilter')) {
+        $slug = true;
+
+        if (!$id = $this->property('categoryId')) {
             return null;
         }
+
+	// Checks for numeric id.
+	if (preg_match('#^id:([0-9]+)$#', $id, $matches)) {
+	    $id = $matches[1];
+	    $slug = false;
+	}
 
         $category = new SongCategory;
 
@@ -310,7 +268,7 @@ class Songs extends ComponentBase
             ? $category->transWhere('slug', $slug)
 	    : $category->where('slug', $slug);*/
 
-        $category = $category->where('slug', $slug);
+        $category = ($slug) ? $category->where('slug', $id) : $category->where('id', $id);
         $category = $category->first();
 
         return $category ?: null;

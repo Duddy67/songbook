@@ -522,7 +522,7 @@ class Song extends Model
             }
 
             if (count($exceptSongIds)) {
-                $query->whereNotIn('id', $exceptSongIds);
+                $query->whereNotIn('codalia_songbook_songs.id', $exceptSongIds);
             }
             if (count($exceptSongSlugs)) {
                 $query->whereNotIn('slug', $exceptSongSlugs);
