@@ -543,11 +543,14 @@ class Song extends Model
                 }
 
 		if ($sortField == 'sort_order') {
-		    // Joins over the ordering model.
-		    $query->join('codalia_songbook_orderings AS o', function($join) use($category) {
-			$join->on('o.song_id', '=', 'codalia_songbook_songs.id')
-			     ->where('o.category_id', '=', $category);
-		    });
+		  // Important: Exclude the ordering columns from the result or song
+		  //            categories won't match.
+		  $query->select('codalia_songbook_songs.*')
+			// Joins over the ordering model.
+		        ->join('codalia_songbook_orderings AS o', function($join) use($category) {
+			    $join->on('o.song_id', '=', 'codalia_songbook_songs.id')
+				 ->where('o.category_id', '=', $category);
+			});
 		}
 
 		$query->orderBy($sortField, $sortDirection);
