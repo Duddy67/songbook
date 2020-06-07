@@ -493,15 +493,13 @@ class Song extends Model
             'exceptCategories' => null,
             'category'         => null,
             'search'           => '',
-            'published'        => true,
             'exceptSong'       => null
         ], $options));
 
         $searchableFields = ['title', 'slug', 'lyrics', 'content'];
 
-        if ($published) {
-            $query->isPublished();
-        }
+	// Shows only published songs.
+	$query->isPublished();
 
         /*
          * Except song(s)

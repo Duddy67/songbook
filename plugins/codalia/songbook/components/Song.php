@@ -76,10 +76,6 @@ class Song extends ComponentBase
 			    $query->where('status', 'published');
 		     }]);
 
-        /*if (!$this->checkEditor()) {
-            $song = $song->isPublished();
-	}*/
-
         try {
             $song = $song->firstOrFail();
         } catch (ModelNotFoundException $ex) {

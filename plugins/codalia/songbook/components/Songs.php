@@ -203,8 +203,6 @@ class Songs extends ComponentBase
         /*
          * List all the songs, eager load their categories
          */
-        //$isPublished = !$this->checkEditor();
-	$isPublished = true;
 
 	$songs = Song::whereHas('category', function ($query) {
 	        // Songs must have their main category published.
@@ -222,7 +220,6 @@ class Songs extends ComponentBase
             'perPage'          => $this->property('songsPerPage'),
             'search'           => trim(input('search')),
             'category'         => $category,
-            'published'        => $isPublished,
             'exceptSong'       => is_array($this->property('exceptSong'))
                 ? $this->property('exceptSong')
                 : preg_split('/,\s*/', $this->property('exceptSong'), -1, PREG_SPLIT_NO_EMPTY),
@@ -272,8 +269,8 @@ class Songs extends ComponentBase
 		continue;
 	    }
 
-	    // N.B: Category page names must start with "category-".
-	    if (preg_match('#^category-[0-9]+\.htm$#', $page->getFileName())) {
+	    // N.B: Category page names must start with "category-level-".
+	    if (preg_match('#^category-level-[0-9]+\.htm$#', $page->getFileName())) {
 	        // Extracts the very first segment of the page url.
 	        preg_match('#^\/([a-z0-9_-]+)\/#', $page->url, $matches);
 
@@ -300,12 +297,5 @@ class Songs extends ComponentBase
         $category = $category->first();
 
         return $category ?: null;
-    }
-
-    protected function checkEditor()
-    {
-        $backendUser = BackendAuth::getUser();
-
-        return $backendUser && $backendUser->hasAccess('rainlab.blog.access_posts') && Settings::get('show_all_posts', true);
     }
 }
