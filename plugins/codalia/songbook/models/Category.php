@@ -143,12 +143,11 @@ class Category extends Model
     /**
      * Sets the "url" attribute with a URL to this object
      *
-     * @param string $pageName
      * @param Cms\Classes\Controller $controller
      *
      * @return string
      */
-    public function setUrl($pageName, $controller)
+    public function setUrl($controller)
     {
         $params = [
             'id'   => $this->id,
@@ -156,18 +155,18 @@ class Category extends Model
         ];
 
 	$this->path = self::getCategoryPath($this);
-	$segments = count($this->path);
+	$level = count($this->path);
 	// Sets the category page with the appropriate url pattern.
-	$pageName = 'category-'.$segments;
+	$pageName = 'category-level-'.$level;
 
 	// The given category has parents.
-	if ($segments > 1) {
+	if ($level > 1) {
 	    // Loops through the category path.
 	    foreach ($this->path as $key => $category) {
 	        $i = $key + 1;
 
 		// Don't treat the last element as it's the given category itself.
-		if ($i == $segments) {
+		if ($i == $level) {
 		    break;
 		}
 

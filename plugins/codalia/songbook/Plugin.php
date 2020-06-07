@@ -64,6 +64,18 @@ class Plugin extends PluginBase
 	Relation::extend(function ($widget) {
 	    $widget->addViewPath(['$/codalia/songbook/models/song']);
 	});
+
+	\Cms\Controllers\Index::extend(function ($controller) {
+	    $controller->bindEvent('template.processSettingsBeforeSave', function ($dataHolder) {
+	        $data = post();  
+		// Ensures the page file names for categories fit the correct pattern.
+		if ($data['templateType'] == 'page' &&
+		    in_array('songList', $data['component_names']) &&
+		    !preg_match('#^category-level-[0-9]+\.htm$#', $data['fileName'])) {
+		    throw new \ApplicationException(\Lang::get('codalia.songbook::lang.settings.invalid_file_name'));
+		}
+	    });
+	});
     }
 
     /**

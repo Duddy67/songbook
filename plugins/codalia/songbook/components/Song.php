@@ -15,11 +15,6 @@ class Song extends ComponentBase
      */
     public $song;
 
-    /**
-     * @var string Reference to the page name for linking to categories.
-     */
-    public $categoryPage;
-
 
     public function componentDetails()
     {
@@ -38,12 +33,6 @@ class Song extends ComponentBase
                 'default'     => '{{ :slug }}',
                 'type'        => 'string',
             ],
-            'categoryPage' => [
-                'title'       => 'codalia.songbook::lang.settings.song_category',
-                'description' => 'codalia.songbook::lang.settings.song_category_description',
-                'type'        => 'dropdown',
-                'default'     => '',
-            ],
         ];
     }
 
@@ -55,7 +44,6 @@ class Song extends ComponentBase
 
     public function onRun()
     {
-        $this->categoryPage = $this->page['categoryPage'] = $this->property('categoryPage');
         $this->song = $this->page['song'] = $this->loadSong();
 	$this->addCss(url('plugins/codalia/songbook/assets/css/breadcrumb.css'));
 
@@ -100,14 +88,14 @@ class Song extends ComponentBase
         }
 
         // Add a "url" helper attribute for linking to the main category.
-	$song->category->setUrl($this->categoryPage, $this->controller);
+	$song->category->setUrl($this->controller);
 
         /*
          * Add a "url" helper attribute for linking to each extra category
          */
         if ($song && $song->categories->count()) {
             $song->categories->each(function($category, $key) use($song) {
-		$category->setUrl($this->categoryPage, $this->controller);
+		$category->setUrl($this->controller);
             });
 	}
 
@@ -183,7 +171,7 @@ class Song extends ComponentBase
         $song->setUrl($songPage, $this->controller);
 
         $song->categories->each(function($category) {
-            $category->setUrl($this->categoryPage, $this->controller);
+            $category->setUrl($this->controller);
         });
 
         return $song;

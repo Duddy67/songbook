@@ -49,13 +49,6 @@ class Songs extends ComponentBase
     public $songPage;
 
     /**
-     * Reference to the page name for linking to categories
-     *
-     * @var string
-     */
-    public $categoryPage;
-
-    /**
      * If the song list should be ordered by another attribute
      *
      * @var string
@@ -106,12 +99,6 @@ class Songs extends ComponentBase
                 'description' => 'codalia.songbook::lang.settings.songs_order_description',
                 'type'        => 'dropdown',
                 'default'     => 'published_at desc'
-            ],
-            'categoryPage' => [
-                'title'       => 'codalia.songbook::lang.settings.songs_category',
-                'description' => 'codalia.songbook::lang.settings.songs_category_description',
-                'type'        => 'dropdown',
-                'group'       => 'codalia.songbook::lang.settings.group_links'
             ],
             'songPage' => [
                 'title'       => 'codalia.songbook::lang.settings.songs_song',
@@ -199,10 +186,9 @@ class Songs extends ComponentBase
         $this->noSongsMessage = $this->page['noSongsMessage'] = $this->property('noSongsMessage');
 
         /*
-         * Page links
+         * Page link
          */
         $this->songPage = $this->page['songPage'] = $this->property('songPage');
-        $this->categoryPage = $this->page['categoryPage'] = $this->property('categoryPage');
     }
 
     protected function listSongs()
@@ -254,7 +240,7 @@ class Songs extends ComponentBase
 	    $song->setUrl($this->songPage, $this->controller, $this->category);
 
 	    $song->categories->each(function($category, $key) {
-		$category->setUrl($this->categoryPage, $this->controller);
+		$category->setUrl($this->controller);
 
 		// Retrieves the path to the current category.
 		if (isset($this->category) && $category->id == $this->category->id) {

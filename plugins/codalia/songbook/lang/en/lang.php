@@ -139,6 +139,7 @@ return [
       'featured_description' => 'Displays songs of a specific category in the home page.',
       'featured_id' => 'Category ID',
       'featured_id_description' => 'Enter the slug or the numeric id of a category to get the songs from. Add a "id:" prefix for numeric ids (eg: id:25).',
+      'invalid_file_name' => 'Invalid file name. File name must start with: "category-level-" followed by a numeric value, (eg: category-level-1.htm). The numeric value refers to the depht of the category path.',
     ],
     'global_settings' => [
       'tab_general' => 'General',

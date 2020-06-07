@@ -14,11 +14,6 @@ class Categories extends ComponentBase
     public $categories;
 
     /**
-     * @var string Reference to the page name for linking to categories.
-     */
-    public $categoryPage;
-
-    /**
      * @var string Reference to the current category slug.
      */
     public $currentCategorySlug;
@@ -47,13 +42,6 @@ class Categories extends ComponentBase
                 'type'        => 'checkbox',
                 'default'     => 0,
             ],
-            'categoryPage' => [
-                'title'       => 'codalia.songbook::lang.settings.category_page',
-                'description' => 'codalia.songbook::lang.settings.category_page_description',
-                'type'        => 'dropdown',
-                'default'     => '',
-                'group'       => 'codalia.songbook::lang.settings.group_links',
-            ],
       ];
     }
 
@@ -67,7 +55,6 @@ class Categories extends ComponentBase
     public function onRun()
     {
 	$this->currentCategorySlug = $this->page['currentCategorySlug'] = $this->property('slug');
-	$this->categoryPage = $this->page['categoryPage'] = $this->property('categoryPage');
 	$this->categories = $this->page['categories'] = $this->loadCategories();
     }
 
@@ -108,7 +95,7 @@ class Categories extends ComponentBase
     protected function linkCategories($categories)
     {
         return $categories->each(function ($category) {
-            $category->setUrl($this->categoryPage, $this->controller);
+            $category->setUrl($this->controller);
 
             if ($category->children) {
                 $this->linkCategories($category->children);
