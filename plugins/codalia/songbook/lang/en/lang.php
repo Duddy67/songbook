@@ -59,6 +59,8 @@ return [
       'viewing_access' => 'Viewing access',
       'category' => 'Category',
       'main_category' => 'Main category',
+      'parent_category' => 'Parent category',
+      'none' => 'None',
     ],
     'status' => [
       'published' => 'Published',

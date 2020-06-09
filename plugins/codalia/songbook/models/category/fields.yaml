@@ -22,6 +22,14 @@ fields:
         tab: codalia.songbook::lang.attribute.tab_manage
         label: codalia.songbook::lang.attribute.status
         type: dropdown
+        span: left
+
+    parent:
+        label: codalia.songbook::lang.attribute.parent_category
+        span: left
+        type: relation
+        nameFrom: name
+        emptyOption: codalia.songbook::lang.attribute.none
 
     description:
         label: codalia.songbook::lang.attribute.description
@@ -36,6 +44,7 @@ fields:
         mode: datetime
         context: [update]
         disabled: true
+        span: left
 
     updated_at:
         label: codalia.songbook::lang.attribute.updated_at
@@ -43,4 +52,5 @@ fields:
         mode: datetime
         context: [update]
         disabled: true
+        span: left
 

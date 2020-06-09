@@ -160,7 +160,7 @@ class Plugin extends PluginBase
 		],
 		'categories' => [
 		    'label'       => 'codalia.songbook::lang.songbook.categories',
-		    'icon'        => 'icon-list-ul',
+		    'icon'        => 'icon-sitemap',
 		    'url'         => Backend::url('codalia/songbook/categories'),
 		    'permissions' => ['codalia.songbook.access_categories']
 		]

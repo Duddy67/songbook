@@ -78,6 +78,14 @@ class Categories extends Controller
       return $this->listRefresh();
     }
 
+    public function reorder()
+    {
+	$this->vars['statusIcons'] = Songs::getStatusIcons();
+	$this->addCss(url('plugins/codalia/songbook/assets/css/extra.css'));
+
+        $this->asExtension('ReorderController')->reorder();
+    }
+
     public function onReorder()
     {
 	parent::onReorder();
