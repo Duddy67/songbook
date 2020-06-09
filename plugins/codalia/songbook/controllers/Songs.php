@@ -91,31 +91,31 @@ class Songs extends Controller
 
     public function index_onSetStatus()
     {
-      // Needed for the status column partial.
-      $this->vars['statusIcons'] = self::getStatusIcons();
+	// Needed for the status column partial.
+	$this->vars['statusIcons'] = self::getStatusIcons();
 
-      // Ensures one or more items are selected.
-      if (($checkedIds = post('checked')) && is_array($checkedIds) && count($checkedIds)) {
-	$status = post('status');
-	foreach ($checkedIds as $songId) {
-	  $song = Song::find($songId);
-	  $song->status = $status;
-	  $song->published_up = Song::setPublishingDate($song);
-	  $song->save();
+	// Ensures one or more items are selected.
+	if (($checkedIds = post('checked')) && is_array($checkedIds) && count($checkedIds)) {
+	  $status = post('status');
+	  foreach ($checkedIds as $songId) {
+	      $song = Song::find($songId);
+	      $song->status = $status;
+	      $song->published_up = Song::setPublishingDate($song);
+	      $song->save();
+	  }
+
+	  $toRemove = ($status == 'archived') ? 'd' : 'ed';
+
+	  Flash::success(Lang::get('codalia.songbook::lang.action.'.rtrim($status, $toRemove).'_success'));
 	}
 
-	$toRemove = ($status == 'archived') ? 'd' : 'ed';
-
-	Flash::success(Lang::get('codalia.songbook::lang.action.'.rtrim($status, $toRemove).'_success'));
-      }
-
-      return $this->listRefresh();
+	return $this->listRefresh();
     }
 
     public function update_onSave($recordId = null, $context = null)
     {
-      // Calls the original update_onSave method
-      return $this->asExtension('FormController')->update_onSave($recordId, $context);
+	// Calls the original update_onSave method
+	return $this->asExtension('FormController')->update_onSave($recordId, $context);
     }
 
     public function listInjectRowClass($record, $definition = null)
@@ -128,6 +128,6 @@ class Songs extends Controller
     public static function getStatusIcons()
     {
 	// Returns the css status mapping.
-        return ['published' => 'success', 'unpublished' => 'info', 'archived' => 'muted', 'trashed' => 'danger']; 
+        return ['published' => 'success', 'unpublished' => 'danger', 'archived' => 'muted', 'trashed' => 'danger']; 
     }
 }

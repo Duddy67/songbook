@@ -39,4 +39,3 @@ scopes:
             published: codalia.songbook::lang.status.published
             unpublished: codalia.songbook::lang.status.unpublished
             archived: codalia.songbook::lang.status.archived
-            trashed: codalia.songbook::lang.status.trashed

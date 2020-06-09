@@ -26,6 +26,7 @@ return [
     ],
     'song' => [
       'title_placeholder' => 'New song title',
+      'name_placeholder' => 'New song name',
       'slug_placeholder' => 'new-song-slug',
       'tab_categories' => 'Categories',
       'categories_comment' => 'Select categories for the song',
@@ -80,6 +81,7 @@ return [
       'parent_item_unpublished' => 'Cannot publish this item as its parent item is unpublished.',
       'previous' => 'Previous',
       'next' => 'Next',
+      'deletion_confirmation' => 'Are you sure you want to delete the selected items ?',
       'cannot_reorder' => 'Cannot reorder items by category as none or more than 1 categories are selected. Please select only 1 category.',
     ],
     'sorting' => [

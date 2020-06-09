@@ -11,7 +11,6 @@ class CreateSongsTable extends Migration
         Schema::create('codalia_songbook_songs', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
-	    //$table->integer('user_id')->unsigned()->nullable()->index();
 	    $table->string('title')->nullable();
             $table->string('slug')->index();
             $table->text('lyrics')->nullable();

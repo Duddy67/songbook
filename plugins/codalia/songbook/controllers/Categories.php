@@ -5,6 +5,7 @@ use Lang;
 use BackendMenu;
 use Backend\Classes\Controller;
 use Codalia\SongBook\Models\Category;
+use Codalia\SongBook\Controllers\Songs;
 
 /**
  * Categories Back-end Controller
@@ -21,9 +22,6 @@ class Categories extends Controller
     public $listConfig = 'config_list.yaml';
     public $reorderConfig = 'config_reorder.yaml';
 
-    // css status mapping.
-    public $statusIcons = ['published' => 'success', 'unpublished' => 'info'];
-
     public function __construct()
     {
         parent::__construct();
@@ -33,7 +31,7 @@ class Categories extends Controller
 
     public function index()
     {
-	$this->vars['statusIcons'] = $this->statusIcons;
+	$this->vars['statusIcons'] = Songs::getStatusIcons();
 
 	// Calls the parent method as an extension.
         $this->asExtension('ListController')->index();
@@ -42,7 +40,7 @@ class Categories extends Controller
     public function index_onSetStatus()
     {
 	// Needed for the status column partial.
-	$this->vars['statusIcons'] = $this->statusIcons;
+	$this->vars['statusIcons'] = Songs::getStatusIcons();
 
 	// Ensures one or more items are selected.
 	if (($checkedIds = post('checked')) && is_array($checkedIds) && count($checkedIds)) {

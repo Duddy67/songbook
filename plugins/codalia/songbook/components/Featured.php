@@ -1,4 +1,4 @@
-<?php namespace Codalia\Songbook\Components;
+<?php namespace Codalia\SongBook\Components;
 
 use Lang;
 use BackendAuth;
