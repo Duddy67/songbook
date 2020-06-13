@@ -27,6 +27,14 @@
   border-left:99.5px solid transparent;
 }
 
+.depth-4 {
+  border-left:133.5px solid transparent;
+}
+
+.depth-5 {
+  border-left:166.5px solid transparent;
+}
+
 .control-treelist li >div.record >span.lock {display:inline-block;padding:7px 0 7px 10px;text-decoration:none;color:#bdc3c7}
 .control-treelist li >div.record >span.lock:hover {color:#bdc3c7}
 .control-treelist li >div.record >span.lock:before {font-family:FontAwesome;font-weight:normal;font-style:normal;text-decoration:inherit;-webkit-font-smoothing:antialiased;content:"\f023"}

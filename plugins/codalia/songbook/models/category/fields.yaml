@@ -19,10 +19,15 @@ fields:
             type: slug
 
     status:
-        tab: codalia.songbook::lang.attribute.tab_manage
         label: codalia.songbook::lang.attribute.status
         type: dropdown
         span: left
+
+    # Read-only information field 
+    _status_field:
+        label: codalia.songbook::lang.attribute.status
+        span: left
+        disabled: true
 
     parent:
         label: codalia.songbook::lang.attribute.parent_category
@@ -30,6 +35,12 @@ fields:
         type: relation
         nameFrom: name
         emptyOption: codalia.songbook::lang.attribute.none
+
+    # Read-only information field 
+    _parent_field:
+        label: codalia.songbook::lang.attribute.parent_category
+        span: left
+        disabled: true
 
     description:
         label: codalia.songbook::lang.attribute.description

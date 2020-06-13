@@ -130,11 +130,11 @@ class Song extends Model
     {
       return array('unpublished' => 'codalia.songbook::lang.status.unpublished',
 		   'published' => 'codalia.songbook::lang.status.published',
-		   'trashed' => 'codalia.songbook::lang.status.trashed',
 		   'archived' => 'codalia.songbook::lang.status.archived');
     }
 
-    public function getUserRoleOptions() {
+    public function getUserRoleOptions()
+    {
         $results = Db::table('backend_user_roles')->select('code', 'name')->where('code', '!=', '')->get();
 
         $options = array();
@@ -146,7 +146,8 @@ class Song extends Model
 	return $options;
     }
 
-    public function getUpdatedByFieldAttribute() {
+    public function getUpdatedByFieldAttribute()
+    {
 	$names = '';
 
 	if($this->updated_by) {
@@ -157,7 +158,8 @@ class Song extends Model
 	return $names;
     }
 
-    public function getStatusFieldAttribute() {
+    public function getStatusFieldAttribute()
+    {
 	$statuses = $this->getStatusOptions();
 	$status = (isset($this->status)) ? $this->status : 'unpublished';
 

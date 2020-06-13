@@ -107,18 +107,15 @@ class Category extends Model
 
     public function afterSave()
     {
-	if ($this->status == 'unpublished') {
-	    // All of the children items have to be unpublished as well.
-	    foreach ($this->getAllChildren() as $children) {
-		$children->status = 'unpublished';
-		$children->save();
-	    }
-	}
-
 	self::setCategoryPath($this);
 
 	foreach ($this->getAllChildren() as $children) {
 	    self::setCategoryPath($children);
+
+	    if ($this->status == 'unpublished') {
+		// All of the children items have to be unpublished as well.
+		\Db::table('codalia_songbook_categories')->where('id', $children->id)->update(['status' => 'unpublished']);
+	    }
 	}
     }
 
@@ -138,6 +135,49 @@ class Category extends Model
     {
 	return array('unpublished' => 'codalia.songbook::lang.status.unpublished',
 		     'published' => 'codalia.songbook::lang.status.published');
+    }
+
+    public function getStatusFieldAttribute()
+    {
+	$statuses = $this->getStatusOptions();
+	$status = (isset($this->status)) ? $this->status : 'unpublished';
+
+	return Lang::get($statuses[$status]);
+    }
+
+    public function getParentFieldAttribute()
+    {
+        if ($this->parent) {
+	    return $this->parent->attributes['name'];
+	}
+
+	return Lang::get('codalia.songbook::lang.attribute.none');
+    }
+
+    /**
+     * Switch visibility of some fields according to the parent and status values.
+     *
+     * @param       $fields
+     * @param  null $context
+     * @return void
+     */
+    public function filterFields($fields, $context = null)
+    {
+        if ($this->parent && $this->parent->attributes['status'] == 'unpublished') {
+	    $fields->status->cssClass = 'hidden';
+            $fields->parent->cssClass = 'hidden';
+            $fields->_status_field->cssClass = 'visible';
+            $fields->_parent_field->cssClass = 'visible';
+	}
+	elseif ($this->parent && $this->parent->attributes['status'] == 'published' && $this->status == 'unpublished') {
+            $fields->parent->cssClass = 'hidden';
+            $fields->_parent_field->cssClass = 'visible';
+            $fields->_status_field->cssClass = 'hidden';
+	}
+	else {
+            $fields->_parent_field->cssClass = 'hidden';
+            $fields->_status_field->cssClass = 'hidden';
+	}
     }
 
     /**

@@ -23,7 +23,7 @@ create:
 # Update page
 update:
     title: Edit Category
-    redirect: codalia/songbook/categories
+    redirect: codalia/songbook/categories/update/:id
     redirectClose: codalia/songbook/categories
 
 # Preview page
