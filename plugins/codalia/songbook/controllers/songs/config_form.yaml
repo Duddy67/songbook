@@ -23,7 +23,7 @@ create:
 # Update page
 update:
     title: Edit Song
-    redirect: codalia/songbook/songs
+    redirect: codalia/songbook/songs/update/:id
     redirectClose: codalia/songbook/songs
 
 # Preview page

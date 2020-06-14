@@ -158,6 +158,15 @@ class Song extends Model
 	return $names;
     }
 
+    public function getCreatedByFieldAttribute()
+    {
+	$names = '';
+	$user = BackendAuth::findUserById($this->created_by);
+	$names = $user->first_name.' '.$user->last_name;
+
+	return $names;
+    }
+
     public function getStatusFieldAttribute()
     {
 	$statuses = $this->getStatusOptions();
@@ -301,8 +310,8 @@ class Song extends Model
 
         if ($context == 'update') {
 	  if (strcmp($fields->created_at->value->toDateTimeString(), $fields->updated_at->value->toDateTimeString()) === 0) {
-	      $fields->updated_at->hidden = true;
-	      $fields->_updated_by_field->hidden = true;
+	      $fields->updated_at->cssClass = 'hidden';
+	      $fields->_updated_by_field->cssClass = 'hidden';
 	  }
 	}
 
@@ -313,11 +322,11 @@ class Song extends Model
         $user = BackendAuth::getUser();
 
         if($user->hasAccess('codalia.songbook.access_publish')) {
-            $fields->_status_field->hidden = true;
+            $fields->_status_field->cssClass = 'hidden';
         }
 
 	if (isset($fields->_created_by_field) && $user->hasAccess('codalia.songbook.access_other_songs')) {
-            $fields->_created_by_field->hidden = true;
+            $fields->_created_by_field->cssClass = 'hidden';
         }
     }
 
