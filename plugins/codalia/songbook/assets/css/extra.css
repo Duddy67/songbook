@@ -39,3 +39,24 @@
 .control-treelist li >div.record >span.lock:hover {color:#bdc3c7}
 .control-treelist li >div.record >span.lock:before {font-family:FontAwesome;font-weight:normal;font-style:normal;text-decoration:inherit;-webkit-font-smoothing:antialiased;content:"\f023"}
 
+.checked-out {
+}
+
+div.checked-out >span.lock:before {
+  margin-left: 10px;
+  font-family:FontAwesome;
+  font-weight:normal;
+  font-style:normal;
+  text-decoration:inherit;
+  -webkit-font-smoothing:antialiased;
+  content:"\f023"
+}
+
+.disable-panel {
+  position: absolute;
+  z-index: 100;
+  opacity: 0.5;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+}

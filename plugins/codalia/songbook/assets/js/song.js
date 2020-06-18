@@ -3,6 +3,10 @@
   // Run a function when the page is fully loaded including graphics.
   $(window).load(function() {
 
+    $('#layout-mainmenu').prepend('<div class="disable-panel">&nbsp;</div>');
+    $('#layout-sidenav').prepend('<div class="disable-panel">&nbsp;</div>');
+    $('.control-toolbar').attr('style', 'table-layout: auto !important');
+
     $('#Form-field-Song-category').change( function() { $.fn.setMainCategory(); });
 
     $.fn.setMainCategory();

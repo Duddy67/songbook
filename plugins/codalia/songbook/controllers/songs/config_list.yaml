@@ -12,7 +12,7 @@ modelClass: Codalia\SongBook\Models\Song
 title: Manage Songs
 
 # Link URL for each record
-recordUrl: codalia/songbook/songs/update/:id
+recordUrl: codalia/songbook/songs/update/:id/edit
 
 # Message to display if the list is empty
 noRecordsMessage: backend::lang.list.no_records

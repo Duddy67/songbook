@@ -128,6 +128,10 @@ class Plugin extends PluginBase
                 'tab' => 'codalia.songbook::lang.songbook.tab',
                 'label' => 'codalia.songbook::lang.songbook.access_other_songs'
             ],
+            'codalia.songbook.access_check_in' => [
+                'tab' => 'codalia.songbook::lang.songbook.tab',
+                'label' => 'codalia.songbook::lang.songbook.access_check_in'
+            ],
         ];
     }
 

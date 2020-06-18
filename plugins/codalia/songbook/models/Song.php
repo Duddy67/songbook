@@ -161,8 +161,11 @@ class Song extends Model
     public function getCreatedByFieldAttribute()
     {
 	$names = '';
-	$user = BackendAuth::findUserById($this->created_by);
-	$names = $user->first_name.' '.$user->last_name;
+
+        if ($this->created_by) {
+	    $user = BackendAuth::findUserById($this->created_by);
+	    $names = $user->first_name.' '.$user->last_name;
+	}
 
 	return $names;
     }
