@@ -54,3 +54,8 @@
     <p><a href="<?= Backend::url('codalia/songbook/categories') ?>" class="btn btn-default">Return to categories list</a></p>
 
 <?php endif ?>
+
+<?php
+    $this->addJs('/plugins/codalia/songbook/assets/js/category.js');
+    $this->addCss(url('plugins/codalia/songbook/assets/css/extra.css'));
+?>

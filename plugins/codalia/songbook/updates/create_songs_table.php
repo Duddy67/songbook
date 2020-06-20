@@ -22,6 +22,8 @@ class CreateSongsTable extends Migration
 	    $table->integer('updated_by')->unsigned();
 	    $table->timestamp('published_up')->nullable();
 	    $table->timestamp('published_down')->nullable();
+	    $table->integer('checked_out')->unsigned()->nullable()->index();
+	    $table->timestamp('checked_out_time')->nullable();
             $table->timestamps();
         });
     }

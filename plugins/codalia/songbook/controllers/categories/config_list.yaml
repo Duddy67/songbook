@@ -12,7 +12,7 @@ modelClass: Codalia\SongBook\Models\Category
 title: Manage Categories
 
 # Link URL for each record
-recordUrl: codalia/songbook/categories/update/:id
+recordUrl: codalia/songbook/categories/update/:id/edit
 
 # Message to display if the list is empty
 noRecordsMessage: backend::lang.list.no_records

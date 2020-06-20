@@ -21,6 +21,8 @@ class CreateCategoriesTable extends Migration
             $table->integer('nest_left')->nullable();
             $table->integer('nest_right')->nullable();
             $table->integer('nest_depth')->nullable();
+	    $table->integer('checked_out')->unsigned()->nullable()->index();
+	    $table->timestamp('checked_out_time')->nullable();
             $table->timestamps();
         });
 

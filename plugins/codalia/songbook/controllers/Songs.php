@@ -37,7 +37,7 @@ class Songs extends Controller
 
     public function index()
     {
-	$this->vars['statusIcons'] = self::getStatusIcons();
+	$this->vars['statusIcons'] = SongBookHelper::instance()->getStatusIcons();
 	$this->addCss(url('plugins/codalia/songbook/assets/css/extra.css'));
 	// Unlocks the checked out items of this user (if any).  
 	SongBookHelper::instance()->checkIn((new Song)->getTable(), BackendAuth::getUser());
@@ -80,7 +80,7 @@ class Songs extends Controller
     public function listOverrideColumnValue($record, $columnName, $definition = null)
     {
         if ($record->checked_out && $columnName == 'title') {
-	    return SongBookHelper::instance()->getCheckInHTML($record, BackendAuth::findUserById($record->checked_out));
+	    return SongBookHelper::instance()->getCheckInHtml($record, BackendAuth::findUserById($record->checked_out));
 	}
     }
 
@@ -110,7 +110,7 @@ class Songs extends Controller
     public function index_onDelete()
     {
 	// Needed for the status column partial.
-	$this->vars['statusIcons'] = self::getStatusIcons();
+	$this->vars['statusIcons'] = SongBookHelper::instance()->getStatusIcons();
 
 	if (($checkedIds = post('checked')) && is_array($checkedIds) && count($checkedIds)) {
 
@@ -132,7 +132,7 @@ class Songs extends Controller
     public function index_onSetStatus()
     {
 	// Needed for the status column partial.
-	$this->vars['statusIcons'] = self::getStatusIcons();
+	$this->vars['statusIcons'] = SongBookHelper::instance()->getStatusIcons();
 
 	// Ensures one or more items are selected.
 	if (($checkedIds = post('checked')) && is_array($checkedIds) && count($checkedIds)) {
@@ -161,7 +161,7 @@ class Songs extends Controller
     public function index_onCheckIn()
     {
 	// Needed for the status column partial.
-	$this->vars['statusIcons'] = self::getStatusIcons();
+	$this->vars['statusIcons'] = SongBookHelper::instance()->getStatusIcons();
 
 	// Ensures one or more items are selected.
 	if (($checkedIds = post('checked')) && is_array($checkedIds) && count($checkedIds)) {
@@ -179,11 +179,5 @@ class Songs extends Controller
     {
 	// Calls the original update_onSave method
 	return $this->asExtension('FormController')->update_onSave($recordId, $context);
-    }
-
-    public static function getStatusIcons()
-    {
-	// Returns the css status mapping.
-        return ['published' => 'success', 'unpublished' => 'danger', 'archived' => 'muted']; 
     }
 }

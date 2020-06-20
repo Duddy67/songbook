@@ -44,10 +44,6 @@
 	  data-stripe-load-indicator>
 	  <?= e(trans('codalia.songbook::lang.action.archive')) ?>
       </button>
-
-      <a href="<?= Backend::url('codalia/songbook/orderings/reorder') ?>" class="btn btn-default oc-icon-sitemap">
-	  <?= e(trans('codalia.songbook::lang.songs.reorder')) ?>
-      </a>
     <?php endif ?>
 
     <?php if ($this->user->hasAccess('codalia.songbook.access_check_in')): ?>
@@ -79,6 +75,12 @@
 	  data-stripe-load-indicator>
 	  <?= e(trans('codalia.songbook::lang.action.delete')) ?>
       </button>
+    <?php endif ?>
+
+    <?php if ($this->user->hasAccess('codalia.songbook.access_publish')): ?>
+      <a href="<?= Backend::url('codalia/songbook/orderings/reorder') ?>" class="btn btn-default oc-icon-sitemap">
+	  <?= e(trans('codalia.songbook::lang.songs.reorder')) ?>
+      </a>
     <?php endif ?>
 </div>
 

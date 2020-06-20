@@ -2,6 +2,8 @@
 
 use October\Rain\Support\Traits\Singleton;
 use Carbon\Carbon;
+use Backend;
+use Flash;
 use Db;
 
 
@@ -27,7 +29,7 @@ class SongBookHelper
     }
 
     /**
-     * Checks in an item table. The "check in" can be more specific according to the
+     * Checks in an item table. The "check-in" can be more specific according to the
      * optional parameters passed.
      *
      * @param string  $tableName
@@ -46,22 +48,35 @@ class SongBookHelper
 	                                 if ($recordId) {
 					     $query->where('id', $recordId);
 					 }
-				    })->update(['checked_out' => 0,
+				    })->update(['checked_out' => null,
 						'checked_out_time' => null]);
     }
 
-    public function getCheckInHTML($record, $user)
+    /**
+     * Builds and returns the check-in html code to display.
+     *
+     * @param objects record$
+     * @param User    $user
+     *
+     * @return string
+     */
+    public function getCheckInHtml($record, $user)
     {
-	$name = $user->first_name.' '.$user->last_name;
-	$link = '<a href="#" title="'.$name.'">';
-	$html = '<div class="checked-out">'.$link.$record->title.'</a><span class="lock"></span></div>';
+	$userName = $user->first_name.' '.$user->last_name;
+	$itemName = (isset($record->name)) ? $record->name : $record->title; 
+	$html = '<div class="checked-out">'.$itemName.'<span class="lock"></span></div>';
+	$html .= '<div class="check-in"><p class="user-check-in">'.$userName.'</p>'.Backend::dateTime($record->checked_out_time).'</div>';
 
 	return $html;
     }
 
+    /**
+     * Returns the css status mapping.
+     *
+     * @return array
+     */
     public function getStatusIcons()
     {
-	// Returns the css status mapping.
         return ['published' => 'success', 'unpublished' => 'danger', 'archived' => 'muted']; 
     }
 }

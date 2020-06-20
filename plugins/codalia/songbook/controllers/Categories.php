@@ -5,7 +5,8 @@ use Lang;
 use BackendMenu;
 use Backend\Classes\Controller;
 use Codalia\SongBook\Models\Category;
-use Codalia\SongBook\Controllers\Songs;
+use BackendAuth;
+use Codalia\SongBook\Helpers\SongBookHelper;
 
 /**
  * Categories Back-end Controller
@@ -31,16 +32,52 @@ class Categories extends Controller
 
     public function index()
     {
-	$this->vars['statusIcons'] = Songs::getStatusIcons();
+	$this->vars['statusIcons'] = SongBookHelper::instance()->getStatusIcons();
+	$this->addCss(url('plugins/codalia/songbook/assets/css/extra.css'));
+	// Unlocks the checked out items of this user (if any).  
+	SongBookHelper::instance()->checkIn((new Category)->getTable(), BackendAuth::getUser());
 
 	// Calls the parent method as an extension.
         $this->asExtension('ListController')->index();
     }
 
+    public function update($recordId = null, $context = null)
+    {
+	$category = Category::find($recordId);
+	$user = BackendAuth::getUser();
+
+	// Checks for check out matching.
+	if ($category->checked_out && $user->id != $category->checked_out) {
+	    Flash::error(Lang::get('codalia.songbook::lang.action.check_out_do_not_match'));
+	    return redirect('backend/codalia/songbook/categories');
+	}
+
+        if ($context == 'edit') {
+	    // Locks the item for this user.
+	    SongBookHelper::instance()->checkOut((new Category)->getTable(), $user, $recordId);
+	}
+
+        return $this->asExtension('FormController')->update($recordId, $context);
+    }
+
+    public function listOverrideColumnValue($record, $columnName, $definition = null)
+    {
+        if ($record->checked_out && $columnName == 'name') {
+	    return SongBookHelper::instance()->getCheckInHtml($record, BackendAuth::findUserById($record->checked_out));
+	}
+    }
+
+    public function listInjectRowClass($record, $definition = null)
+    {
+        if ($record->checked_out) {
+	    return 'safe disabled nolink';
+	}
+    }
+
     public function index_onSetStatus()
     {
 	// Needed for the status column partial.
-	$this->vars['statusIcons'] = Songs::getStatusIcons();
+	$this->vars['statusIcons'] = SongBookHelper::instance()->getStatusIcons();
 
 	// Ensures one or more items are selected.
 	if (($checkedIds = post('checked')) && is_array($checkedIds) && count($checkedIds)) {
@@ -48,6 +85,11 @@ class Categories extends Controller
 
 	    foreach ($checkedIds as $catId) {
 	      $category = Category::find($catId);
+
+	      if ($category->checked_out) {
+		  Flash::error(Lang::get('codalia.songbook::lang.action.checked_out_item'));
+		  return $this->listRefresh();
+	      }
 
 	      if ($status == 'unpublished') {
 		  // All of the children items have to be unpublished as well.
@@ -78,9 +120,26 @@ class Categories extends Controller
       return $this->listRefresh();
     }
 
+    public function index_onCheckIn()
+    {
+	// Needed for the status column partial.
+	$this->vars['statusIcons'] = SongBookHelper::instance()->getStatusIcons();
+
+	// Ensures one or more items are selected.
+	if (($checkedIds = post('checked')) && is_array($checkedIds) && count($checkedIds)) {
+	  foreach ($checkedIds as $recordId) {
+	      SongBookHelper::instance()->checkIn((new Category)->getTable(), null, $recordId);
+	  }
+
+	  Flash::success(Lang::get('codalia.songbook::lang.action.check_in_success'));
+	}
+
+	return $this->listRefresh();
+    }
+
     public function reorder()
     {
-	$this->vars['statusIcons'] = Songs::getStatusIcons();
+	$this->vars['statusIcons'] = SongBookHelper::instance()->getStatusIcons();
 	$this->addCss(url('plugins/codalia/songbook/assets/css/extra.css'));
 
         $this->asExtension('ReorderController')->reorder();
