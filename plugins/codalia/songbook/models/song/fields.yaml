@@ -21,7 +21,7 @@ fields:
 secondaryTabs:
     stretch: true
     fields:
-        lyrics:
+        description:
             tab: codalia.songbook::lang.attribute.tab_edit
             type: richeditor
             stretch: true

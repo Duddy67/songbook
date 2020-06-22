@@ -10,7 +10,7 @@
 {% endif %}
 
 <h3>{{ song.title }}</h3>
-<div class="content">{{ song.lyrics|raw }}</div>
+<div class="content">{{ song.description|raw }}</div>
 	<?= e(trans('codalia.songbook::lang.action.new')) ?>
 
 {% if song.featured_images.count %}

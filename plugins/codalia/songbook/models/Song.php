@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Codalia\SongBook\Models\Category as SongCategory;
 use Codalia\SongBook\Models\Settings;
 use Codalia\SongBook\Components\Songs;
+use System\Classes\PluginManager;
 
 
 /**
@@ -109,7 +110,6 @@ class Song extends Model
     ];
     public $belongsTo = [
         'user' => ['Backend\Models\User', 'key' => 'created_by'],
-        'usergroup' => ['RainLab\User\Models\UserGroup', 'key' => 'access_id'],
         'category' => ['Codalia\SongBook\Models\Category'],
     ];
     public $belongsToMany = [
@@ -124,6 +124,22 @@ class Song extends Model
     public $morphMany = [];
     public $attachOne = [];
     public $attachMany = [];
+
+
+    public function __construct($attributes = array())
+    {
+	// Ensures first that the RainLab User plugin is installed and activated.
+	if (PluginManager::instance()->exists('RainLab.User')) {
+	    $this->belongsTo['usergroup'] = ['RainLab\User\Models\UserGroup', 'key' => 'access_id'];
+	}
+	else {
+	    // Links to the administrator's user goup by default to prevent an error. 
+	    // However, this relation will not be used.
+	    $this->belongsTo['usergroup'] = ['Backend\Models\UserGroup', 'key' => 'access_id'];
+	}
+
+        parent::__construct($attributes);
+    }
 
 
     public function getStatusOptions()
@@ -310,6 +326,10 @@ class Song extends Model
      */
     public function filterFields($fields, $context = null)
     {
+	if (!PluginManager::instance()->exists('RainLab.User')) {
+	    // Doesn't manage the access on front-end.
+	    $fields->usergroup->hidden = true;
+	}
 
         if ($context == 'update') {
 	  if (strcmp($fields->created_at->value->toDateTimeString(), $fields->updated_at->value->toDateTimeString()) === 0) {
@@ -379,13 +399,13 @@ class Song extends Model
     {
         $more = '<!-- more -->';
 
-        if (strpos($this->lyrics, $more) !== false) {
-            $parts = explode($more, $this->lyrics);
+        if (strpos($this->description, $more) !== false) {
+            $parts = explode($more, $this->description);
 
             return array_get($parts, 0);
         }
 
-        return Html::limit($this->lyrics, Settings::get('max_characters', 600));
+        return Html::limit($this->description, Settings::get('max_characters', 600));
     }
 
     //
@@ -510,7 +530,7 @@ class Song extends Model
             'exceptSong'       => null
         ], $options));
 
-        $searchableFields = ['title', 'slug', 'lyrics', 'content'];
+        $searchableFields = ['title', 'slug', 'description'];
 
 	// Shows only published songs.
 	$query->isPublished();

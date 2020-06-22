@@ -13,7 +13,7 @@ class CreateSongsTable extends Migration
             $table->increments('id');
 	    $table->string('title')->nullable();
             $table->string('slug')->index();
-            $table->text('lyrics')->nullable();
+            $table->text('description')->nullable();
             $table->text('notes')->nullable();
             $table->char('status', 15)->default('unpublished');
 	    $table->integer('category_id')->unsigned()->nullable()->index();
