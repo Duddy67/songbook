@@ -140,7 +140,7 @@ class Featured extends ComponentBase
     {
         $ids = [];
 
-	if (Auth::check()) {
+	if (\System\Classes\PluginManager::instance()->exists('RainLab.User') && Auth::check()) {
 	    $userGroups = Auth::getUser()->getGroups();
 
 	    foreach ($userGroups as $userGroup) {

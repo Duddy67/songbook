@@ -2,7 +2,6 @@
 
 use Backend;
 use System\Classes\PluginBase;
-use System\Classes\PluginManager;
 use Backend\Models\User as BackendUserModel;
 use RainLab\User\Models\User as UserModel;
 use RainLab\User\Controllers\Users as UsersController;
@@ -54,7 +53,7 @@ class Plugin extends PluginBase
 	});
 
 	// Ensures first that the RainLab User plugin is installed and activated.
-	if (PluginManager::instance()->exists('RainLab.User')) {
+	if (\System\Classes\PluginManager::instance()->exists('RainLab.User')) {
 	    UserGroup::extend(function ($model) {
 		$model->hasMany['songs'] = ['Codalia\SongBook\Models\Song', 'key' => 'access_id'];
 	    });

@@ -13,7 +13,6 @@ use Carbon\Carbon;
 use Codalia\SongBook\Models\Category as SongCategory;
 use Codalia\SongBook\Models\Settings;
 use Codalia\SongBook\Components\Songs;
-use System\Classes\PluginManager;
 
 
 /**
@@ -129,7 +128,7 @@ class Song extends Model
     public function __construct($attributes = array())
     {
 	// Ensures first that the RainLab User plugin is installed and activated.
-	if (PluginManager::instance()->exists('RainLab.User')) {
+	if (\System\Classes\PluginManager::instance()->exists('RainLab.User')) {
 	    $this->belongsTo['usergroup'] = ['RainLab\User\Models\UserGroup', 'key' => 'access_id'];
 	}
 	else {
@@ -326,7 +325,7 @@ class Song extends Model
      */
     public function filterFields($fields, $context = null)
     {
-	if (!PluginManager::instance()->exists('RainLab.User')) {
+	if (!\System\Classes\PluginManager::instance()->exists('RainLab.User')) {
 	    // Doesn't manage the access on front-end.
 	    $fields->usergroup->hidden = true;
 	}
@@ -376,7 +375,7 @@ class Song extends Model
 	    return true;
 	}
 
-	if (Auth::check()) {
+	if (\System\Classes\PluginManager::instance()->exists('RainLab.User') && Auth::check()) {
 	    $userGroups = Auth::getUser()->getGroups();
 
 	    foreach ($userGroups as $userGroup) {
